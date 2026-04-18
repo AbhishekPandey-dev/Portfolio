@@ -1,0 +1,27 @@
+src/components/sections/AboutHero.tsx(115,11): error TS2322: Type '{ children: string; delay: number; scroll: boolean; style: { fontFamily: "var(--font-body, Inter), sans-serif"; fontWeight: number; fontSize: string; color: "var(--color-muted)"; lineHeight: number; letterSpacing: string; maxWidth: string; }; }' is not assignable to type 'IntrinsicAttributes & LineRevealProps'.
+  Property 'scroll' does not exist on type 'IntrinsicAttributes & LineRevealProps'.
+src/components/sections/ContactForm.tsx(179,15): error TS2322: Type '{ children: string; variant: "fill"; style: { width: string; opacity: number; cursor: string; }; }' is not assignable to type 'IntrinsicAttributes & MagneticButtonProps'.
+  Property 'style' does not exist on type 'IntrinsicAttributes & MagneticButtonProps'.
+src/components/sections/ContactHero.tsx(39,8): error TS2322: Type '{ children: string[]; tag: "h1"; style: { fontFamily: "var(--font-display, Syne), sans-serif"; fontWeight: number; fontSize: string; lineHeight: number; color: "var(--color-text)"; letterSpacing: string; marginBottom: string; }; }' is not assignable to type 'HeadingRevealProps'.
+  Types of property 'children' are incompatible.
+    Type 'string[]' is not assignable to type 'string'.
+src/components/ui/HeadingReveal.tsx(131,6): error TS2745: This JSX tag's 'children' prop expects type 'never' which requires multiple children, but only a single child was provided.
+src/components/ui/HeadingReveal.tsx(132,7): error TS2322: Type 'Ref<HTMLHeadingElement>' is not assignable to type 'never'.
+  Type 'null' is not assignable to type 'never'.
+src/components/ui/HeadingReveal.tsx(133,7): error TS2322: Type 'string | undefined' is not assignable to type 'never'.
+  Type 'undefined' is not assignable to type 'never'.
+src/components/ui/HeadingReveal.tsx(134,7): error TS2322: Type 'CSSProperties | undefined' is not assignable to type 'never'.
+  Type 'undefined' is not assignable to type 'never'.
+src/components/ui/HoverImagePreview.tsx(24,15): error TS2554: Expected 1 arguments, but got 0.
+src/components/ui/HoverImagePreview.tsx(25,15): error TS2554: Expected 1 arguments, but got 0.
+src/lib/index.ts(3,3): error TS2305: Module '"./tokens"' has no exported member 'tokens'.
+src/lib/index.ts(4,3): error TS2305: Module '"./tokens"' has no exported member 'colors'.
+src/lib/index.ts(5,3): error TS2305: Module '"./tokens"' has no exported member 'typography'.
+src/lib/index.ts(6,3): error TS2305: Module '"./tokens"' has no exported member 'spacing'.
+src/lib/index.ts(7,3): error TS2305: Module '"./tokens"' has no exported member 'motion'.
+src/lib/index.ts(8,3): error TS2305: Module '"./tokens"' has no exported member 'zIndex'.
+src/lib/index.ts(9,3): error TS2305: Module '"./tokens"' has no exported member 'breakpoints'.
+src/lib/index.ts(10,3): error TS2305: Module '"./tokens"' has no exported member 'radius'.
+src/lib/index.ts(11,3): error TS2305: Module '"./tokens"' has no exported member 'shadows'.
+src/lib/index.ts(14,15): error TS2305: Module '"./tokens"' has no exported member 'Tokens'.
+src/lib/index.ts(14,23): error TS2305: Module '"./tokens"' has no exported member 'Color'.
