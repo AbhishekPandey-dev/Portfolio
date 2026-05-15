@@ -1,4 +1,12 @@
-import { GithubIcon, MailIcon } from "@animateicons/react/lucide";
+"use client";
+
+import { useEffect, useRef } from "react";
+import {
+  GithubIcon,
+  MailIcon,
+  type GithubIconHandle,
+  type MailIconHandle,
+} from "@animateicons/react/lucide";
 
 type LinkItem = {
   label: string;
@@ -33,6 +41,21 @@ export function Navbar({
   socials,
   cta = { label: "Contact", href: "#contact" },
 }: NavbarProps) {
+  const githubIconRef = useRef<GithubIconHandle>(null);
+  const mailIconRef = useRef<MailIconHandle>(null);
+
+  useEffect(() => {
+    githubIconRef.current?.startAnimation();
+    mailIconRef.current?.startAnimation();
+
+    const interval = window.setInterval(() => {
+      githubIconRef.current?.startAnimation();
+      mailIconRef.current?.startAnimation();
+    }, 3000);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
   return (
     <header className="fixed inset-x-0 top-4 z-50 pointer-events-none">
       <nav
@@ -73,7 +96,13 @@ export function Navbar({
               className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white/85 transition-colors duration-200 hover:bg-white/5 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
               data-cursor="hover"
             >
-              <GithubIcon size={26} duration={1} color="#ffffff" />
+              <GithubIcon
+                ref={githubIconRef}
+                size={26}
+                duration={1}
+                color="#ffffff"
+                isAnimated
+              />
             </a>
           ) : null}
 
@@ -84,7 +113,13 @@ export function Navbar({
               className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white/85 transition-colors duration-200 hover:bg-white/5 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
               data-cursor="hover"
             >
-              <MailIcon size={26} duration={1} color="#ffffff" />
+              <MailIcon
+                ref={mailIconRef}
+                size={26}
+                duration={1}
+                color="#ffffff"
+                isAnimated
+              />
             </a>
           ) : null}
         </div>
