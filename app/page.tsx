@@ -15,7 +15,7 @@ export default function Home() {
           github: "https://github.com/AbhishekPandey-dev",
           email: "mailto:hello@abhishekapandey.dev",
         }}
-        cta={{ label: "Contact", href: "#contact" }}
+        cta={{ label: "Let's Talk", href: "#contact" }}
       />
     </main>
   );
