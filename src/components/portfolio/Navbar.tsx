@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   GithubIcon,
   MailIcon,
@@ -41,16 +41,23 @@ export function Navbar({
   socials,
   cta = { label: "Contact", href: "#contact" },
 }: NavbarProps) {
-  const githubIconRef = useRef<GithubIconHandle>(null);
-  const mailIconRef = useRef<MailIconHandle>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const githubDesktopRef = useRef<GithubIconHandle>(null);
+  const mailDesktopRef = useRef<MailIconHandle>(null);
+  const githubMobileRef = useRef<GithubIconHandle>(null);
+  const mailMobileRef = useRef<MailIconHandle>(null);
 
   useEffect(() => {
-    githubIconRef.current?.startAnimation();
-    mailIconRef.current?.startAnimation();
+    githubDesktopRef.current?.startAnimation();
+    mailDesktopRef.current?.startAnimation();
+    githubMobileRef.current?.startAnimation();
+    mailMobileRef.current?.startAnimation();
 
     const interval = window.setInterval(() => {
-      githubIconRef.current?.startAnimation();
-      mailIconRef.current?.startAnimation();
+      githubDesktopRef.current?.startAnimation();
+      mailDesktopRef.current?.startAnimation();
+      githubMobileRef.current?.startAnimation();
+      mailMobileRef.current?.startAnimation();
     }, 3000);
 
     return () => window.clearInterval(interval);
@@ -97,7 +104,7 @@ export function Navbar({
               data-cursor="hover"
             >
               <GithubIcon
-                ref={githubIconRef}
+                ref={githubDesktopRef}
                 size={26}
                 duration={1}
                 color="#ffffff"
@@ -114,7 +121,7 @@ export function Navbar({
               data-cursor="hover"
             >
               <MailIcon
-                ref={mailIconRef}
+                ref={mailDesktopRef}
                 size={26}
                 duration={1}
                 color="#ffffff"
@@ -134,17 +141,98 @@ export function Navbar({
 
         <button
           type="button"
+          onClick={() => setIsOpen((prev) => !prev)}
+          aria-expanded={isOpen}
+          aria-label="Toggle navigation"
           className="inline-flex md:hidden items-center justify-center rounded-full p-2 text-white/85 transition-colors duration-200 hover:bg-white/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
-          aria-label="Open mobile menu"
           data-cursor="hover"
         >
-          <span className="flex h-4 w-4 flex-col justify-between">
-            <span className="block h-0.5 w-full rounded-full bg-current" />
-            <span className="block h-0.5 w-full rounded-full bg-current" />
-            <span className="block h-0.5 w-full rounded-full bg-current" />
+          <span className="relative h-4 w-4">
+            <span
+              className={`absolute left-0 top-0 block h-0.5 w-full rounded-full bg-current transition-transform duration-200 ${
+                isOpen ? "translate-y-1.5 rotate-45" : ""
+              }`}
+            />
+            <span
+              className={`absolute left-0 top-1.5 block h-0.5 w-full rounded-full bg-current transition-opacity duration-200 ${
+                isOpen ? "opacity-0" : "opacity-100"
+              }`}
+            />
+            <span
+              className={`absolute left-0 top-3 block h-0.5 w-full rounded-full bg-current transition-transform duration-200 ${
+                isOpen ? "-translate-y-1.5 -rotate-45" : ""
+              }`}
+            />
           </span>
         </button>
       </nav>
+
+      <div
+        className={`absolute left-1/2 top-full z-30 mt-2 w-[min(90vw,22rem)] -translate-x-1/2 overflow-hidden rounded-3xl border border-white/10 bg-black/95 p-3 shadow-[0_22px_60px_rgba(0,0,0,0.35)] backdrop-blur-2xl transition-all duration-200 md:hidden ${
+          isOpen ? "visible opacity-100 scale-100" : "invisible opacity-0 scale-95"
+        }`}
+      >
+        <ul className="flex flex-col gap-2">
+          {links.map((link) => (
+            <li key={link.href}>
+              <a
+                href={link.href}
+                onClick={() => setIsOpen(false)}
+                className="block rounded-full px-3 py-2 text-sm text-white/85 transition-colors duration-200 hover:bg-white/5 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+                data-cursor="hover"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-3 flex items-center gap-2">
+          {socials?.github ? (
+            <a
+              href={socials.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub profile"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full text-white/85 transition-colors duration-200 hover:bg-white/5 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+              data-cursor="hover"
+            >
+              <GithubIcon
+                ref={githubMobileRef}
+                size={24}
+                duration={1}
+                color="#ffffff"
+                isAnimated
+              />
+            </a>
+          ) : null}
+
+          {socials?.email ? (
+            <a
+              href={socials.email}
+              aria-label="Send email"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full text-white/85 transition-colors duration-200 hover:bg-white/5 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+              data-cursor="hover"
+            >
+              <MailIcon
+                ref={mailMobileRef}
+                size={24}
+                duration={1}
+                color="#ffffff"
+                isAnimated
+              />
+            </a>
+          ) : null}
+
+          <a
+            href={cta.href}
+            className="ml-auto inline-flex items-center rounded-full bg-white px-4 py-2 text-sm font-semibold text-black transition-colors duration-200 hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black/70"
+            data-cursor="hover"
+          >
+            {cta.label}
+          </a>
+        </div>
+      </div>
     </header>
   );
 }
