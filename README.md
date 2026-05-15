@@ -1,4 +1,8 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Abhishek Pandey Portfolio
+
+This is the portfolio website for Abhishek Pandey, a Full Stack Web Developer, UI/UX Developer, and expert in Shopify and WordPress with 2.5 years of experience.
+
+Built with [Next.js](https://nextjs.org) and bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
