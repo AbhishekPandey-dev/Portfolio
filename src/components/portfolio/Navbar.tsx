@@ -1,4 +1,4 @@
-import { Mail } from "lucide-react";
+import { GithubIcon, MailIcon } from "@animateicons/react/lucide";
 
 type LinkItem = {
   label: string;
@@ -73,14 +73,7 @@ export function Navbar({
               className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white/85 transition-colors duration-200 hover:bg-white/5 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
               data-cursor="hover"
             >
-              <svg
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-                className="h-4 w-4"
-              >
-                <path d="M12 0C5.37 0 0 5.375 0 12c0 5.312 3.438 9.812 8.205 11.387.6.113.82-.263.82-.582 0-.287-.01-1.05-.015-2.06-3.338.725-4.042-1.61-4.042-1.61-.546-1.387-1.334-1.756-1.334-1.756-1.09-.745.083-.73.083-.73 1.205.085 1.84 1.237 1.84 1.237 1.07 1.835 2.807 1.305 3.492.998.108-.775.42-1.305.763-1.605-2.665-.305-5.467-1.335-5.467-5.93 0-1.31.47-2.382 1.235-3.222-.125-.305-.535-1.53.115-3.185 0 0 1.005-.322 3.295 1.23.96-.267 1.985-.4 3.005-.405 1.02.005 2.045.138 3.005.405 2.285-1.552 3.29-1.23 3.29-1.23.65 1.655.24 2.88.115 3.185.77.84 1.235 1.915 1.235 3.222 0 4.61-2.805 5.62-5.475 5.92.43.37.815 1.1.815 2.22 0 1.605-.015 2.9-.015 3.295 0 .325.215.705.825.585C20.565 21.81 24 17.31 24 12c0-6.625-5.375-12-12-12Z" />
-              </svg>
+              <GithubIcon size={26} duration={1} color="#ffffff" />
             </a>
           ) : null}
 
@@ -91,7 +84,7 @@ export function Navbar({
               className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white/85 transition-colors duration-200 hover:bg-white/5 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
               data-cursor="hover"
             >
-              <Mail className="h-4 w-4" aria-hidden="true" />
+              <MailIcon size={26} duration={1} color="#ffffff" />
             </a>
           ) : null}
         </div>
