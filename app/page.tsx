@@ -1,10 +1,12 @@
 import { Navbar } from "@/src/components/portfolio/Navbar";
 import { GradientBackground } from "@/src/components/portfolio/GradientBackground";
+import { KnightModel } from "@/src/components/portfolio/KnightModel";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen bg-transparent">
+    <main className="relative min-h-[185vh] bg-transparent">
       <GradientBackground />
+      <KnightModel />
       <Navbar
         wordmark="<ABHISHEK>"
         links={[

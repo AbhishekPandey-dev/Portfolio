@@ -1,6 +1,7 @@
 "use client";
 
 import { ShaderGradient, ShaderGradientCanvas } from "@shadergradient/react";
+import type { GradientT } from "@shadergradient/react";
 
 export default function GradientBackgroundInner() {
   return (
@@ -53,7 +54,7 @@ export default function GradientBackgroundInner() {
           uStrength: 2,
           uTime: 0,
           wireframe: false,
-        } as any)}
+        } as unknown as GradientT)}
       />
     </ShaderGradientCanvas>
   );
