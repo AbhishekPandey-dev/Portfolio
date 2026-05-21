@@ -1,8 +1,10 @@
 import { Navbar } from "@/src/components/portfolio/Navbar";
+import { GradientBackground } from "@/src/components/portfolio/GradientBackground";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen bg-black">
+    <main className="relative min-h-screen bg-transparent">
+      <GradientBackground />
       <Navbar
         wordmark="Abhishek."
         links={[
