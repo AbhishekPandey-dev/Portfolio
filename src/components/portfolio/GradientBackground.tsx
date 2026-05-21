@@ -7,13 +7,31 @@ const GradientBackgroundInner = dynamic(
   () => import("./GradientBackgroundInner"),
   {
     ssr: false,
-    loading: () => <div className="fixed inset-0 bg-black -z-1" />,
+    loading: () => (
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "#000",
+        }}
+      />
+    ),
   }
 );
 
 export function GradientBackground() {
   return (
-    <div className="fixed inset-0 -z-1 bg-black">
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: -1,
+        background: "#000",
+        overflow: "hidden",
+        width: "100vw",
+        height: "100vh",
+      }}
+    >
       <GradientBackgroundInner />
     </div>
   );
