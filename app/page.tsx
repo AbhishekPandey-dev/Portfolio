@@ -6,7 +6,7 @@ export default function Home() {
     <main className="relative min-h-screen bg-transparent">
       <GradientBackground />
       <Navbar
-        wordmark="Abhishek."
+        wordmark="<ABHISHEK>"
         links={[
           { label: "About", href: "#about" },
           { label: "Work", href: "#work" },
