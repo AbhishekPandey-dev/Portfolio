@@ -125,10 +125,7 @@ export default function RingGalleryInner({ className }: RingGalleryInnerProps) {
 
         const am = new (kokomi as any).AssetManager(this, resourceList)
 
-        am.on('ready', () => {
-          // Hide loader
-          mountRef.current?.querySelector('[data-loader]')?.classList.add(styles.hollow)
-
+          am.on('ready', () => {
           const material = new THREE.MeshBasicMaterial()
           const r = 6.4
           const scale = 0.8
@@ -262,20 +259,6 @@ export default function RingGalleryInner({ className }: RingGalleryInnerProps) {
     >
 
       {/* Three.js canvas mounts here automatically via appendChild above */}
-
-      {/* Loader overlay */}
-      <div
-        data-loader
-        className={`${styles.loaderScreen} fixed inset-0 z-50 bg-white flex items-center justify-center transition-opacity duration-300`}
-      >
-        <div className={styles.loading}>
-          {'LOADING'.split('').map((char, i) => (
-            <span key={i} style={{ '--i': i } as React.CSSProperties}>
-              {char}
-            </span>
-          ))}
-        </div>
-      </div>
 
       {/* Hero text overlay */}
       <div

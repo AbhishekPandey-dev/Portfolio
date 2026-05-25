@@ -8,14 +8,7 @@ type RingGalleryProps = {
 
 const RingGalleryInner = dynamic(
   () => import('./RingGalleryInner'),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="w-full h-screen bg-[#0c0c0c] flex items-center justify-center">
-        <div className="text-white text-sm tracking-widest animate-pulse">LOADING...</div>
-      </div>
-    ),
-  }
+  { ssr: false }
 )
 
 export default function RingGallery({ className }: RingGalleryProps) {
