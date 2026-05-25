@@ -1,5 +1,11 @@
-# Abhishek Pandey Portfolio
+# Abhishek Pandey — Portfolio
 
-This is the portfolio website for Abhishek Pandey, a Full Stack Web Developer, UI/UX Developer, and expert in Shopify and WordPress with 2.5 years of experience.
+Full Stack & Shopify Developer portfolio built with Next.js.
 
-#work in process
+## Run Locally
+
+**Prerequisites:** Node.js
+
+1. Install dependencies: `npm install`
+2. Set the `GEMINI_API_KEY` in `.env.local` to your Gemini API key
+3. Run the app: `npm run dev`

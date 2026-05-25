@@ -1,36 +1,26 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import type {Metadata} from 'next';
+import './globals.css'; // Global styles
 
 export const metadata: Metadata = {
-  title: "Abhishek Pandey | Full Stack Web Developer",
-  description:
-    "Portfolio website for Abhishek Pandey, a full stack web developer, UI/UX developer, and Shopify/WordPress expert with 2.5 years of experience.",
+  title: 'Abhishek Pandey | Full Stack & Shopify Developer',
+  description: 'Portfolio of Abhishek Pandey, a Full Stack Web Developer, UI/UX Designer, and Shopify & WordPress Engineer with 2.5 years of experience building scalable web solutions.',
+  keywords: [
+    'Abhishek Pandey',
+    'Full Stack Developer',
+    'Shopify Developer',
+    'Shopify Engineer',
+    'WordPress Developer',
+    'UI/UX Developer',
+    'Web Developer',
+    'WordPress Engineer'
+  ],
+  authors: [{ name: 'Abhishek Pandey' }],
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body suppressHydrationWarning className="min-h-full flex flex-col">
-        {children}
-      </body>
+    <html lang="en">
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }
