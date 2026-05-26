@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import styles from './RingGallery.module.css'
 
 // Imports are safe at top-level here since this component is dynamic-loaded with ssr:false
 import * as THREE from 'three'
