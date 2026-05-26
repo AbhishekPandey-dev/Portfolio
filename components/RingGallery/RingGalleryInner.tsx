@@ -113,20 +113,34 @@ export default function RingGalleryInner({ className }: RingGalleryInnerProps) {
         this.renderer.setClearColor(new THREE.Color(BG_COLOR), 1)
         this.camera.position.set(0, 0, 16)
 
+        const iconFiles = [
+          "ANGULAR.png", "BOOTSTRAP.png", "FIREBASE.png", "GIT.png", "GITHUB.png",
+          "HTML5.png", "JAVA.png", "JAVASCRIPT.png", "JQUERY.png", "MONGO DB.png",
+          "NEST JS.png", "NODE JS.png", "NPM.png", "PHP.png", "PRETTIER.png",
+          "PYTHON.png", "REACT.png", "REDIS.png", "REDUX.png", "RUBY.png",
+          "SAAS.png", "SHOPIFY.png", "STACK OVERFLOW.png", "STRIPE.png", "TAILWIND.png",
+          "TYPESCRIPT.png", "VUE JS.png", "WORDPRESS.png"
+        ]
+
+        for (let i = iconFiles.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [iconFiles[i], iconFiles[j]] = [iconFiles[j], iconFiles[i]];
+        }
+
         const circleCount = 3
-        const circleImgCountUnit = 12
+        const circleImgCountUnit = 9
         const circleImgTotalCount = circleImgCountUnit * sumFormula(circleCount)
 
         const resourceList = [...Array(circleImgTotalCount).keys()].map((_, i) => ({
           name: `tex${i + 1}`,
           type: 'texture',
-          path: `https://picsum.photos/id/${i + 1}/320/400`,
+          path: `/assets/tech_icons/${iconFiles[i % iconFiles.length]}`,
         }))
 
         const am = new (kokomi as any).AssetManager(this, resourceList)
 
           am.on('ready', () => {
-          const material = new THREE.MeshBasicMaterial()
+          const material = new THREE.MeshBasicMaterial({ transparent: true })
           const r = 6.4
           const scale = 0.8
           const rings: THREE.Group[] = []
@@ -135,7 +149,11 @@ export default function RingGalleryInner({ className }: RingGalleryInnerProps) {
           for (let i = 0; i < circleCount; i++) {
             const c1 = sumFormula(i) * circleImgCountUnit
             const c2 = sumFormula(i + 1) * circleImgCountUnit
-            const textures = Object.values((am as any).items).slice(c1, c2) as THREE.Texture[]
+            
+            const textures: THREE.Texture[] = []
+            for (let k = c1; k < c2; k++) {
+              textures.push((am as any).items[`tex${k + 1}`])
+            }
 
             const ring = new THREE.Group()
             this.scene.add(ring)
@@ -147,7 +165,9 @@ export default function RingGalleryInner({ className }: RingGalleryInnerProps) {
               lines.push(line)
 
               const image = tex.image as { width: number; height: number }
-              const imgScale = 0.005 * scale * (i * 0.36 + 1)
+              const maxDim = Math.max(image.width, image.height) || 1
+              const normalizedScale = 3.5 / maxDim
+              const imgScale = normalizedScale * scale * (i * 0.36 + 1)
               const width = image.width * imgScale
               const height = image.height * imgScale
               const geometry = new THREE.PlaneGeometry(width, height)
