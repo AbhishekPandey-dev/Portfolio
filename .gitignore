@@ -1,7 +1,35 @@
+# Dependencies
 node_modules/
+
+# Next.js build output
 .next/
-coverage/
+out/
+
+# TypeScript incremental build cache
+tsconfig.tsbuildinfo
+*.tsbuildinfo
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
 .DS_Store
+Thumbs.db
+
+# Logs
 *.log
+npm-debug.log*
+
+# Environment variables
 .env*
 !.env.example
+
+# Testing coverage
+coverage/
+
+# Deployment
+.vercel
