@@ -18,9 +18,13 @@ export default function Home() {
           sparkCount={8}
           duration={400}
         >
-          {/* Premium Navigation Bar (Above background) */}
           <div className="relative z-10">
             <DynamicIslandNav />
+          </div>
+          <div className="absolute inset-0 flex items-start justify-center pt-[12vh] md:pt-[8vh]">
+            <h1 className="font-anton text-red text-[clamp(5rem,22vw,18rem)] md:text-[clamp(8rem,15vw,20rem)] tracking-[-0.02em] leading-none text-center select-none">
+              ABHISHEK PANDEY
+            </h1>
           </div>
         </ClickSpark>
       </section>

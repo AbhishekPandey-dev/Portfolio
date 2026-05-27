@@ -94,3 +94,13 @@ section {
 .pill .hover-circle {
   transform: scale(0);
 }
+
+@media (min-width: 1024px) {
+  #hero-section h1 {
+    font-size: clamp(8rem, 14vw, 18rem) !important;
+    padding-top: 0 !important;
+  }
+  #hero-section > div.absolute {
+    padding-top: 16vh !important;
+  }
+}
