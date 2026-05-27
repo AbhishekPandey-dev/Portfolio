@@ -142,9 +142,9 @@ export default function BubbleMenu({
       <motion.div
         className="flex min-h-14 w-full items-center justify-between gap-3 overflow-hidden rounded-full border border-white/10 px-4 py-2.5 text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.16),0_16px_44px_rgba(0,0,0,0.42)] backdrop-blur-2xl pointer-events-auto"
         animate={{
-          borderColor: isOpen ? 'rgba(228,54,54,0.45)' : 'rgba(255,255,255,0.12)',
+          borderColor: isOpen ? 'rgba(237,28,36,0.45)' : 'rgba(255,255,255,0.12)',
           boxShadow: isOpen
-            ? 'inset 0 1px 1px rgba(255,255,255,0.18), 0 18px 56px rgba(228,54,54,0.18), 0 16px 44px rgba(0,0,0,0.5)'
+            ? 'inset 0 1px 1px rgba(255,255,255,0.18), 0 18px 56px rgba(237,28,36,0.18), 0 16px 44px rgba(0,0,0,0.5)'
             : 'inset 0 1px 1px rgba(255,255,255,0.16), 0 16px 44px rgba(0,0,0,0.42)',
         }}
         transition={{ duration: shouldReduceMotion ? 0 : 0.28, ease: premiumEase }}
@@ -171,7 +171,7 @@ export default function BubbleMenu({
           transition={{ type: 'spring', stiffness: 420, damping: 28 }}
         >
           <motion.span
-            className="absolute inset-1 rounded-full bg-[#E43636]"
+            className="absolute inset-1 rounded-full bg-[#ED1C24]"
             initial={false}
             animate={{ opacity: isOpen ? 1 : 0, scale: isOpen ? 1 : 0.72 }}
             transition={{ duration: shouldReduceMotion ? 0 : 0.22, ease: premiumEase }}
@@ -224,14 +224,14 @@ export default function BubbleMenu({
                 <button
                   type="button"
                   onClick={close}
-                  className="group flex h-12 w-full items-center justify-between rounded-full border border-white/10 bg-white/[0.055] px-4 text-sm font-semibold text-white/88 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)] transition-colors duration-200 hover:border-[#E43636]/50 hover:bg-[#E43636]/16 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70 active:bg-white/[0.1]"
+                  className="group flex h-12 w-full items-center justify-between rounded-full border border-white/10 bg-white/[0.055] px-4 text-sm font-semibold text-white/88 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)] transition-colors duration-200 hover:border-[#ED1C24]/50 hover:bg-[#ED1C24]/16 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70 active:bg-white/[0.1]"
                   aria-label="Close mobile navigation"
                 >
                   <span className="flex items-center gap-2">
                     <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
                     <span>Back</span>
                   </span>
-                  <span className="h-2 w-2 rounded-full bg-[#E43636] shadow-[0_0_18px_rgba(228,54,54,0.8)]" />
+                  <span className="h-2 w-2 rounded-full bg-[#ED1C24] shadow-[0_0_18px_rgba(237,28,36,0.8)]" />
                 </button>
               </div>
 
@@ -240,7 +240,7 @@ export default function BubbleMenu({
                 {items.map((item, index) => {
                   const rotationDeg = item.rotation || 0;
                   const delay = shouldReduceMotion ? 0 : index * Math.min(staggerDelay || 0.06, 0.06);
-                  const accentColor = item.hoverStyles?.bgColor || '#E43636';
+                  const accentColor = item.hoverStyles?.bgColor || '#ED1C24';
 
                   return (
                     <motion.div
@@ -283,7 +283,7 @@ export default function BubbleMenu({
                         <span
                           style={{
                             background:
-                              'linear-gradient(90deg, var(--mobile-item-accent), rgba(228,54,54,0))',
+                              'linear-gradient(90deg, var(--mobile-item-accent), rgba(237,28,36,0))',
                           }}
                           className="absolute inset-y-0 left-0 w-1 opacity-80 transition-all duration-300 group-hover:w-full group-hover:opacity-100 group-focus-visible:w-full group-focus-visible:opacity-100"
                           aria-hidden="true"
@@ -330,7 +330,7 @@ export default function BubbleMenu({
                         rel="noopener noreferrer"
                         whileHover={{ scale: shouldReduceMotion ? 1 : 1.06, y: shouldReduceMotion ? 0 : -1 }}
                         whileTap={{ scale: shouldReduceMotion ? 1 : 0.94 }}
-                        className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.055] text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)] transition-colors duration-200 hover:border-[#E43636]/50 hover:bg-[#E43636]/16 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+                        className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.055] text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)] transition-colors duration-200 hover:border-[#ED1C24]/50 hover:bg-[#ED1C24]/16 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
                         aria-label="GitHub Profile"
                       >
                         <GithubIcon ref={githubIconRef} size={20} color="#ffffff" />
@@ -341,7 +341,7 @@ export default function BubbleMenu({
                         href={socials.email}
                         whileHover={{ scale: shouldReduceMotion ? 1 : 1.06, y: shouldReduceMotion ? 0 : -1 }}
                         whileTap={{ scale: shouldReduceMotion ? 1 : 0.94 }}
-                        className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.055] text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)] transition-colors duration-200 hover:border-[#E43636]/50 hover:bg-[#E43636]/16 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+                        className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.055] text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)] transition-colors duration-200 hover:border-[#ED1C24]/50 hover:bg-[#ED1C24]/16 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
                         aria-label="Send Email"
                       >
                         <MailIcon ref={mailIconRef} size={20} color="#ffffff" />

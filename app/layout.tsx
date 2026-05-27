@@ -1,5 +1,24 @@
-import type {Metadata} from 'next';
-import './globals.css'; // Global styles
+import type { Metadata } from 'next';
+import { Anton, Poppins, B612 } from 'next/font/google';
+import './globals.css';
+
+const anton = Anton({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-anton',
+});
+
+const poppins = Poppins({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-poppins',
+});
+
+const b612 = B612({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  variable: '--font-b612',
+});
 
 export const metadata: Metadata = {
   title: 'Abhishek Pandey | Full Stack & Shopify Developer',
@@ -17,10 +36,10 @@ export const metadata: Metadata = {
   authors: [{ name: 'Abhishek Pandey' }],
 };
 
-export default function RootLayout({children}: {children: React.ReactNode}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning>{children}</body>
+      <body className={`${anton.variable} ${poppins.variable} ${b612.variable} font-sans`} suppressHydrationWarning>{children}</body>
     </html>
   );
 }

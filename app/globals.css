@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+@theme {
+  --color-red: #ED1C24;
+  --color-light-gray: #D3CDCB;
+  --color-off-white: #EFEEE8;
+  --font-anton: "Anton", sans-serif;
+  --font-sans: "Poppins", sans-serif;
+  --font-b612: "B612", sans-serif;
+}
+
 html,
 body,
 #__next {
@@ -44,7 +53,7 @@ section {
 }
 
 .pill .hover-circle {
-  background: var(--base, #E43636);
+  background: var(--base, #ED1C24);
   z-index: 1;
   display: block;
   will-change: transform;

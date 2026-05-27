@@ -257,8 +257,8 @@ export default function Footer() {
           fontSize: 'clamp(28px, 5.5vw, 72px)',
           textAlign: 'center',
           letterSpacing: '-0.03em',
-          fontFamily: 'Inter, sans-serif',
-          fontWeight: 800,
+          fontFamily: 'var(--font-poppins), sans-serif',
+          fontWeight: 700,
           pointerEvents: 'none',
           zIndex: 1,
           lineHeight: 1.1,
@@ -277,11 +277,12 @@ export default function Footer() {
           Move your mouse
         </span>
         <span
+          className="font-b612"
           style={{
             display: 'block',
             width: 'max-content',
-            color: '#444',
-            fontWeight: 500,
+            color: '#D3CDCB',
+            fontWeight: 400,
             fontSize: '0.45em',
             marginTop: '0.6em',
             letterSpacing: '0.08em',

@@ -185,12 +185,12 @@ export function DynamicIslandNav({
         <BubbleMenu
           logo={
             <div className="flex items-center gap-2 select-none">
-              <span className="text-base font-sans font-bold tracking-wider text-white">
+              <span className="text-base font-anton tracking-wider text-white">
                 {wordmark}
               </span>
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E43636] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#E43636]"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ED1C24] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ED1C24]"></span>
               </span>
             </div>
           }
@@ -198,7 +198,7 @@ export function DynamicIslandNav({
             label: link.label.toLowerCase(),
             href: link.href,
             rotation: idx % 2 === 0 ? -6 : 6,
-            hoverStyles: { bgColor: "#E43636", textColor: "#ffffff" },
+            hoverStyles: { bgColor: "#ED1C24", textColor: "#ffffff" },
           }))}
           socials={socials}
           menuBg="rgba(10, 10, 10, 0.45)"
@@ -226,18 +226,18 @@ export function DynamicIslandNav({
             paddingBottom: isShowingFull ? "6px" : "10px",
             borderColor:
               isExpanded && !isPastHero
-                ? "rgba(228,54,54,0.45)"
+                ? "rgba(237,28,36,0.45)"
                 : "rgba(255,255,255,0.12)",
             boxShadow:
               isExpanded && !isPastHero
-                ? "inset 0 1px 1px rgba(255,255,255,0.18), 0 12px 44px rgba(228,54,54,0.12), 0 12px 44px rgba(0,0,0,0.65)"
+                ? "inset 0 1px 1px rgba(255,255,255,0.18), 0 12px 44px rgba(237,28,36,0.12), 0 12px 44px rgba(0,0,0,0.65)"
                 : "inset 0 1px 1px rgba(255,255,255,0.18), 0 12px 44px rgba(0,0,0,0.65)",
           }}
           transition={navSpring}
         >
           <div className="flex items-center">
             <span
-              className="text-base font-sans font-bold text-white tracking-wider shrink-0 cursor-default select-none"
+              className="text-xl font-anton text-white tracking-wider shrink-0 cursor-default select-none"
               onClick={() => {
                 if (!isShowingFull) toggle();
               }}
@@ -255,8 +255,8 @@ export function DynamicIslandNav({
                   exit="exit"
                   className="relative flex h-2 w-2 ml-2 shrink-0"
                 >
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E43636] opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#E43636]" />
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ED1C24] opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ED1C24]" />
                 </motion.span>
               ) : (
                 <motion.div
@@ -284,7 +284,7 @@ export function DynamicIslandNav({
                         <PillNavLink
                           label={link.label}
                           href={link.href}
-                          baseColor="#E43636"
+                          baseColor="#ED1C24"
                           textColor="rgba(255,255,255,0.85)"
                           hoverTextColor="#ffffff"
                         />
