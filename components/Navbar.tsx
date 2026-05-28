@@ -38,6 +38,8 @@ type NavbarProps = {
   cta?: CTA;
 };
 
+const smoothEase = [0.22, 1, 0.36, 1] as const;
+
 export function Navbar({
   wordmark = "ABHISHEK",
   links = DEFAULT_LINKS,
@@ -49,7 +51,7 @@ export function Navbar({
 }: NavbarProps) {
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const [isExpanded, setIsExpanded] = useState(!isHome);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [isPastHero, setIsPastHero] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
   const githubIconRef = useRef<any>(null);
@@ -136,64 +138,32 @@ export function Navbar({
     };
   }, [isExpanded, isPastHero, close, isHome]);
 
-  const navSpring = {
-    type: "spring" as const,
-    stiffness: 380,
-    damping: 26,
-    mass: 0.65,
-  };
-
-  const contentSlide = {
-    hidden: { opacity: 0, x: -12, filter: "blur(2px)" },
-    visible: {
-      opacity: 1,
-      x: 0,
-      filter: "blur(0px)",
-      transition: { duration: 0.22, ease: "easeOut" as const },
-    },
-    exit: {
-      opacity: 0,
-      x: -8,
-      filter: "blur(1px)",
-      transition: { duration: 0.12, ease: "easeIn" as const },
-    },
-  };
-
   const listVariants = {
-    hidden: { transition: { staggerChildren: 0.04, staggerDirection: -1 } },
-    visible: { transition: { staggerChildren: 0.04 } },
+    hidden: { transition: { staggerChildren: 0.06, staggerDirection: -1 } },
+    visible: { transition: { staggerChildren: 0.06 } },
   };
 
   const linkVariants = {
-    hidden: { opacity: 0, x: -10, scale: 0.95 },
+    hidden: { opacity: 0, y: 12, scale: 0.92 },
     visible: {
       opacity: 1,
-      x: 0,
+      y: 0,
       scale: 1,
-      transition: { type: "spring" as const, stiffness: 400, damping: 24 },
+      transition: { type: "spring" as const, stiffness: 400, damping: 26 },
     },
   };
 
-  const socialsVariants = {
-    hidden: { opacity: 0, x: -8 },
+  const trailingVariants = {
+    hidden: { opacity: 0, y: 10 },
     visible: {
       opacity: 1,
-      x: 0,
-      transition: { delay: 0.08, duration: 0.18, ease: "easeOut" as const },
+      y: 0,
+      transition: { duration: 0.3, ease: smoothEase },
     },
-    exit: { opacity: 0, x: -6, transition: { duration: 0.1 } },
   };
 
-  const ctaVariants = {
-    hidden: { opacity: 0, scale: 0.92, x: -8 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      x: 0,
-      transition: { delay: 0.12, type: "spring" as const, stiffness: 400, damping: 22 },
-    },
-    exit: { opacity: 0, scale: 0.95, x: -6, transition: { duration: 0.1 } },
-  };
+  const collapsedPadding = "10px 24px 10px 28px";
+  const expandedPadding = "6px 16px 6px 16px";
 
   return (
     <header className="fixed inset-x-0 top-3 z-50 px-3 pointer-events-none sm:top-4 lg:px-0">
@@ -233,25 +203,32 @@ export function Navbar({
         <motion.nav
           aria-label="Primary"
           layout
-          style={{ originX: 0.5, originY: 0.5 }}
-          className="flex items-center rounded-full bg-[#0a0a0aa0] border border-white/12 backdrop-blur-2xl text-white/90 overflow-hidden"
+          initial={{ y: -16, opacity: 0 }}
           animate={{
-            paddingLeft: isShowingFull ? "16px" : "28px",
-            paddingRight: isShowingFull ? "16px" : "24px",
-            paddingTop: isShowingFull ? "6px" : "10px",
-            paddingBottom: isShowingFull ? "6px" : "10px",
+            y: 0,
+            opacity: 1,
             borderColor:
               isExpanded && !isPastHero
-                ? "rgba(237,28,36,0.45)"
+                ? "rgba(237,28,36,0.40)"
                 : "rgba(255,255,255,0.12)",
             boxShadow:
               isExpanded && !isPastHero
-                ? "inset 0 1px 1px rgba(255,255,255,0.18), 0 12px 44px rgba(237,28,36,0.12), 0 12px 44px rgba(0,0,0,0.65)"
+                ? "inset 0 1px 1px rgba(255,255,255,0.18), 0 16px 48px rgba(237,28,36,0.10), 0 12px 44px rgba(0,0,0,0.65)"
                 : "inset 0 1px 1px rgba(255,255,255,0.18), 0 12px 44px rgba(0,0,0,0.65)",
           }}
-          transition={navSpring}
+          transition={{
+            y: { duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.1 },
+            opacity: { duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.1 },
+            borderColor: { duration: 0.4, ease: smoothEase },
+            boxShadow: { duration: 0.4, ease: smoothEase },
+            layout: { type: "spring", stiffness: 180, damping: 22, mass: 0.8 },
+          }}
+          style={{
+            padding: isShowingFull ? expandedPadding : collapsedPadding,
+          }}
+          className="flex items-center rounded-full bg-[#0a0a0aa0] border border-white/12 backdrop-blur-2xl text-white/90 overflow-hidden"
         >
-          <div className="flex items-center">
+          <div className="flex items-center min-w-0">
             <Link
               href="/"
               className="text-xl font-anton text-white tracking-wider shrink-0 cursor-pointer select-none"
@@ -265,26 +242,31 @@ export function Navbar({
               {wordmark}
             </Link>
 
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="popLayout">
               {!isShowingFull ? (
                 <motion.span
                   key="dot"
-                  variants={contentSlide}
-                  initial="visible"
-                  animate="visible"
-                  exit="exit"
-                  className="relative flex h-2 w-2 ml-2 shrink-0"
+                  initial={{ opacity: 0, scale: 0, width: 0 }}
+                  animate={{ opacity: 1, scale: 1, width: "auto" }}
+                  exit={{ opacity: 0, scale: 0, width: 0 }}
+                  transition={{ duration: 0.22, ease: smoothEase }}
+                  className="relative flex h-2 w-2 ml-2 shrink-0 overflow-hidden"
                 >
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ED1C24] opacity-75" />
+                  <motion.span
+                    animate={{ opacity: [0.55, 1, 0.55], scale: [1, 1.4, 1] }}
+                    transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute inline-flex h-full w-full rounded-full bg-[#ED1C24]"
+                  />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ED1C24]" />
                 </motion.span>
               ) : (
                 <motion.div
                   key="content"
-                  variants={contentSlide}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
+                  layout="position"
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -8 }}
+                  transition={{ duration: 0.3, ease: smoothEase }}
                   className="flex items-center"
                 >
                   <div className="w-3 shrink-0" />
@@ -313,17 +295,14 @@ export function Navbar({
                   </motion.ul>
 
                   <motion.div
-                    variants={socialsVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
+                    variants={trailingVariants}
                     className="flex items-center gap-2 ml-3"
                   >
                     <div className="h-6 w-px bg-white/15 shrink-0" />
                     <div className="flex items-center gap-2">
                       {socials?.github ? (
                         <motion.a
-                          whileHover={{ scale: 1.12, rotate: 6 }}
+                          whileHover={{ scale: 1.1, rotate: 5 }}
                           whileTap={{ scale: 0.95 }}
                           transition={{ type: "spring", stiffness: 450, damping: 25 }}
                           href={socials.github}
@@ -339,7 +318,7 @@ export function Navbar({
 
                       {socials?.email ? (
                         <motion.a
-                          whileHover={{ scale: 1.12, rotate: -6 }}
+                          whileHover={{ scale: 1.1, rotate: -5 }}
                           whileTap={{ scale: 0.95 }}
                           transition={{ type: "spring", stiffness: 450, damping: 25 }}
                           href={socials.email}
@@ -354,10 +333,7 @@ export function Navbar({
                   </motion.div>
 
                   <motion.div
-                    variants={ctaVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
+                    variants={trailingVariants}
                     className="ml-3 shrink-0"
                   >
                     <Link
