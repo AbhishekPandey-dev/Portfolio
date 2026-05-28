@@ -3,6 +3,10 @@ import { Anton, Poppins, B612 } from 'next/font/google';
 import { Navbar } from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ClickSpark from '@/components/ui/ClickSpark';
+import GSAPRegistry from '@/lib/gsap-registry';
+import TransitionProvider from '@/components/ui/transition-provider';
+import Transition1 from '@/components/ui/transition1';
+import Transition2 from '@/components/ui/transition2';
 import './globals.css';
 
 const anton = Anton({
@@ -43,6 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${anton.variable} ${poppins.variable} ${b612.variable} font-sans`} suppressHydrationWarning>
+        <GSAPRegistry />
         <Navbar />
         <ClickSpark
           sparkColor="#fff"
@@ -51,9 +56,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           sparkCount={8}
           duration={400}
         >
-          {children}
+          <TransitionProvider>
+            {children}
+          </TransitionProvider>
         </ClickSpark>
         <Footer />
+        <Transition1 />
+        <Transition2 />
       </body>
     </html>
   );
