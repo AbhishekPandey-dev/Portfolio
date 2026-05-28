@@ -6,7 +6,7 @@ import { GooeyText } from "@/components/ui/GooeyText";
 export default function Home() {
   return (
     <main
-      className="relative h-screen w-screen bg-black overflow-hidden"
+      className="relative h-screen w-full bg-black overflow-hidden"
       id="home-main"
     >
       <section id="hero-section" className="relative h-screen w-full">

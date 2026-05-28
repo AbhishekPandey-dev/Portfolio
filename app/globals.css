@@ -9,15 +9,22 @@
   --font-b612: "B612", sans-serif;
 }
 
-html,
-body {
-  min-height: 100%;
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overflow-x: hidden;
+}
+
+html::-webkit-scrollbar {
+  display: none;
 }
 
 body {
   margin: 0;
   background: #000;
   color: #fff;
+  min-height: 100%;
+  overflow-x: hidden;
 }
 
 .pill {
