@@ -138,13 +138,20 @@ export function Navbar({
     };
   }, [isExpanded, isPastHero, close, isHome]);
 
+  const morphSpring = {
+    type: "spring" as const,
+    stiffness: 300,
+    damping: 30,
+    mass: 0.6,
+  };
+
   const listVariants = {
     hidden: { transition: { staggerChildren: 0.06, staggerDirection: -1 } },
     visible: { transition: { staggerChildren: 0.06 } },
   };
 
   const linkVariants = {
-    hidden: { opacity: 0, y: 12, scale: 0.92 },
+    hidden: { opacity: 0, y: 10, scale: 0.92 },
     visible: {
       opacity: 1,
       y: 0,
@@ -154,16 +161,13 @@ export function Navbar({
   };
 
   const trailingVariants = {
-    hidden: { opacity: 0, y: 10 },
+    hidden: { opacity: 0, y: 8 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.3, ease: smoothEase },
+      transition: { duration: 0.28, ease: smoothEase },
     },
   };
-
-  const collapsedPadding = "10px 24px 10px 28px";
-  const expandedPadding = "6px 16px 6px 16px";
 
   return (
     <header className="fixed inset-x-0 top-3 z-50 px-3 pointer-events-none sm:top-4 lg:px-0">
@@ -202,11 +206,14 @@ export function Navbar({
       >
         <motion.nav
           aria-label="Primary"
-          layout
           initial={{ y: -16, opacity: 0 }}
           animate={{
             y: 0,
             opacity: 1,
+            paddingLeft: isShowingFull ? 16 : 28,
+            paddingRight: isShowingFull ? 16 : 24,
+            paddingTop: isShowingFull ? 6 : 10,
+            paddingBottom: isShowingFull ? 6 : 10,
             borderColor:
               isExpanded && !isPastHero
                 ? "rgba(237,28,36,0.40)"
@@ -219,12 +226,12 @@ export function Navbar({
           transition={{
             y: { duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.1 },
             opacity: { duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.1 },
+            paddingLeft: morphSpring,
+            paddingRight: morphSpring,
+            paddingTop: morphSpring,
+            paddingBottom: morphSpring,
             borderColor: { duration: 0.4, ease: smoothEase },
             boxShadow: { duration: 0.4, ease: smoothEase },
-            layout: { type: "spring", stiffness: 180, damping: 22, mass: 0.8 },
-          }}
-          style={{
-            padding: isShowingFull ? expandedPadding : collapsedPadding,
           }}
           className="flex items-center rounded-full bg-[#0a0a0aa0] border border-white/12 backdrop-blur-2xl text-white/90 overflow-hidden"
         >
@@ -242,111 +249,116 @@ export function Navbar({
               {wordmark}
             </Link>
 
-            <AnimatePresence mode="popLayout">
-              {!isShowingFull ? (
+            <motion.span
+              animate={{
+                width: isShowingFull ? 0 : 16,
+                opacity: isShowingFull ? 0 : 1,
+                marginLeft: isShowingFull ? 0 : 8,
+              }}
+              transition={{
+                width: { duration: 0.22, ease: smoothEase },
+                opacity: { duration: 0.18, ease: smoothEase },
+                marginLeft: { duration: 0.22, ease: smoothEase },
+              }}
+              className="overflow-hidden shrink-0 flex items-center justify-center"
+              style={{ height: 16 }}
+            >
+              <span className="relative flex h-2 w-2 shrink-0">
                 <motion.span
-                  key="dot"
-                  initial={{ opacity: 0, scale: 0, width: 0 }}
-                  animate={{ opacity: 1, scale: 1, width: "auto" }}
-                  exit={{ opacity: 0, scale: 0, width: 0 }}
-                  transition={{ duration: 0.22, ease: smoothEase }}
-                  className="relative flex h-2 w-2 ml-2 shrink-0 overflow-hidden"
-                >
-                  <motion.span
-                    animate={{ opacity: [0.55, 1, 0.55], scale: [1, 1.4, 1] }}
-                    transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute inline-flex h-full w-full rounded-full bg-[#ED1C24]"
-                  />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ED1C24]" />
-                </motion.span>
-              ) : (
-                <motion.div
-                  key="content"
-                  layout="position"
-                  initial={{ opacity: 0, x: -12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -8 }}
-                  transition={{ duration: 0.3, ease: smoothEase }}
-                  className="flex items-center"
-                >
-                  <div className="w-3 shrink-0" />
+                  animate={{ opacity: [0.55, 1, 0.55], scale: [1, 1.4, 1] }}
+                  transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute inline-flex h-full w-full rounded-full bg-[#ED1C24]"
+                />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ED1C24]" />
+              </span>
+            </motion.span>
 
-                  <motion.ul
-                    variants={listVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className="flex items-center gap-2"
+            <motion.div
+              animate={{
+                maxWidth: isShowingFull ? 800 : 0,
+                opacity: isShowingFull ? 1 : 0,
+                x: isShowingFull ? 0 : -12,
+              }}
+              transition={{
+                maxWidth: { duration: 0.35, ease: smoothEase },
+                opacity: { duration: 0.25, ease: smoothEase },
+                x: { duration: 0.35, ease: smoothEase },
+              }}
+              className="overflow-hidden flex items-center whitespace-nowrap"
+            >
+              <div className="w-3 shrink-0" />
+
+              <motion.ul
+                variants={listVariants}
+                initial="hidden"
+                animate={isShowingFull ? "visible" : "hidden"}
+                className="flex items-center gap-2"
+              >
+                {links.map((link) => (
+                  <motion.li
+                    key={link.href}
+                    variants={linkVariants}
+                    className="shrink-0"
                   >
-                    {links.map((link) => (
-                      <motion.li
-                        key={link.href}
-                        variants={linkVariants}
-                        className="shrink-0"
-                      >
-                        <PillNavLink
-                          label={link.label}
-                          href={link.href}
-                          baseColor="#ED1C24"
-                          textColor="rgba(255,255,255,0.85)"
-                          hoverTextColor="#ffffff"
-                        />
-                      </motion.li>
-                    ))}
-                  </motion.ul>
+                    <PillNavLink
+                      label={link.label}
+                      href={link.href}
+                      baseColor="#ED1C24"
+                      textColor="rgba(255,255,255,0.85)"
+                      hoverTextColor="#ffffff"
+                    />
+                  </motion.li>
+                ))}
+              </motion.ul>
 
-                  <motion.div
-                    variants={trailingVariants}
-                    className="flex items-center gap-2 ml-3"
-                  >
-                    <div className="h-6 w-px bg-white/15 shrink-0" />
-                    <div className="flex items-center gap-2">
-                      {socials?.github ? (
-                        <motion.a
-                          whileHover={{ scale: 1.1, rotate: 5 }}
-                          whileTap={{ scale: 0.95 }}
-                          transition={{ type: "spring", stiffness: 450, damping: 25 }}
-                          href={socials.github}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label="GitHub profile"
-                          className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white/85 transition-colors duration-150 hover:bg-white/5 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
-                          data-cursor="hover"
-                        >
-                          <GithubIcon ref={githubIconRef} size={20} color="#ffffff" />
-                        </motion.a>
-                      ) : null}
-
-                      {socials?.email ? (
-                        <motion.a
-                          whileHover={{ scale: 1.1, rotate: -5 }}
-                          whileTap={{ scale: 0.95 }}
-                          transition={{ type: "spring", stiffness: 450, damping: 25 }}
-                          href={socials.email}
-                          aria-label="Send email"
-                          className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white/85 transition-colors duration-150 hover:bg-white/5 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
-                          data-cursor="hover"
-                        >
-                          <MailIcon ref={mailIconRef} size={20} color="#ffffff" />
-                        </motion.a>
-                      ) : null}
-                    </div>
-                  </motion.div>
-
-                  <motion.div
-                    variants={trailingVariants}
-                    className="ml-3 shrink-0"
-                  >
-                    <Link
-                      href={cta.href}
-                      className="inline-flex items-center rounded-full bg-white px-5 py-2 text-sm font-serif italic font-semibold text-black transition-colors duration-200 hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black/70"
-                      data-cursor="hover"
+              <motion.div
+                variants={trailingVariants}
+                className="flex items-center gap-2 ml-3"
+              >
+                <div className="h-6 w-px bg-white/15 shrink-0" />
+                <div className="flex items-center gap-2">
+                  {socials?.github ? (
+                    <motion.a
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ type: "spring", stiffness: 450, damping: 25 }}
+                      href={socials.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="GitHub profile"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white/85 transition-colors duration-150 hover:bg-white/5 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
                     >
-                      {cta.label}
-                    </Link>
-                  </motion.div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                      <GithubIcon ref={githubIconRef} size={20} color="#ffffff" />
+                    </motion.a>
+                  ) : null}
+
+                  {socials?.email ? (
+                    <motion.a
+                      whileHover={{ scale: 1.1, rotate: -5 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ type: "spring", stiffness: 450, damping: 25 }}
+                      href={socials.email}
+                      aria-label="Send email"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white/85 transition-colors duration-150 hover:bg-white/5 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+                    >
+                      <MailIcon ref={mailIconRef} size={20} color="#ffffff" />
+                    </motion.a>
+                  ) : null}
+                </div>
+              </motion.div>
+
+              <motion.div
+                variants={trailingVariants}
+                className="ml-3 shrink-0"
+              >
+                <Link
+                  href={cta.href}
+                  className="inline-flex items-center rounded-full bg-white px-5 py-2 text-sm font-serif italic font-semibold text-black transition-colors duration-200 hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black/70"
+                >
+                  {cta.label}
+                </Link>
+              </motion.div>
+            </motion.div>
           </div>
         </motion.nav>
       </div>
