@@ -252,14 +252,18 @@ export function Navbar({
           transition={navSpring}
         >
           <div className="flex items-center">
-            <span
-              className="text-xl font-anton text-white tracking-wider shrink-0 cursor-default select-none"
-              onClick={() => {
-                if (!isShowingFull) toggle();
+            <Link
+              href="/"
+              className="text-xl font-anton text-white tracking-wider shrink-0 cursor-pointer select-none"
+              onClick={(e) => {
+                if (!isShowingFull) {
+                  e.preventDefault();
+                  toggle();
+                }
               }}
             >
               {wordmark}
-            </span>
+            </Link>
 
             <AnimatePresence mode="wait">
               {!isShowingFull ? (
@@ -356,13 +360,13 @@ export function Navbar({
                     exit="exit"
                     className="ml-3 shrink-0"
                   >
-                    <a
+                    <Link
                       href={cta.href}
                       className="inline-flex items-center rounded-full bg-white px-5 py-2 text-sm font-serif italic font-semibold text-black transition-colors duration-200 hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black/70"
                       data-cursor="hover"
                     >
                       {cta.label}
-                    </a>
+                    </Link>
                   </motion.div>
                 </motion.div>
               )}
