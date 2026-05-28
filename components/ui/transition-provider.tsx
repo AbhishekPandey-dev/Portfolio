@@ -26,6 +26,44 @@ const OVERLAY_TEXT: Record<string, string> = {
   '/process': "Let See How i do this magical work",
 };
 
+function getBody() {
+  return document.body;
+}
+
+function getPercentageVerticalClip(): number {
+  const titleEl = document.querySelector('.title__destination') as HTMLElement;
+  if (!titleEl) return 5;
+  const rect = titleEl.getBoundingClientRect();
+  const halfHeight = rect.height / 2;
+  const halfViewport = window.innerHeight / 2;
+  return (halfHeight / halfViewport) * 50;
+}
+
+function getContentChildren(): Element[] | null {
+  const main = document.querySelector('.app__wrapper main');
+  if (!main) return null;
+  const children = Array.from(main.children);
+  return children.length ? children : null;
+}
+
+function hideContent(children: Element[]) {
+  gsap.set(children, { y: 24, opacity: 0 });
+}
+
+function animateContentIn(children: Element[]): Promise<void> {
+  return new Promise((resolve) => {
+    gsap.to(children, {
+      y: 0,
+      opacity: 1,
+      duration: 0.7,
+      stagger: 0.08,
+      ease: 'power3.out',
+      clearProps: 'transform',
+      onComplete: resolve,
+    });
+  });
+}
+
 export default function TransitionProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -34,21 +72,6 @@ export default function TransitionProvider({ children }: { children: React.React
   const prevPathname = useRef(pathname);
   const splitTitle = useRef<SplitText | null>(null);
   const [phaseState, setPhaseState] = useState<TransitionPhase>('idle');
-
-  const getBody = () => document.body;
-
-  function getPercentageVerticalClip(): number {
-    const titleEl = document.querySelector('.title__destination') as HTMLElement;
-    if (!titleEl) return 5;
-    const rect = titleEl.getBoundingClientRect();
-    const halfHeight = rect.height / 2;
-    const halfViewport = window.innerHeight / 2;
-    return (halfHeight / halfViewport) * 50;
-  }
-
-  // ============================================================
-  // TRANSITION ONE — SVG Spiral Draw
-  // ============================================================
 
   const t1Before = useCallback(() => {
     getBody().classList.add('is__transitioning');
@@ -72,21 +95,21 @@ export default function TransitionProvider({ children }: { children: React.React
 
       gsap.set(path, {
         drawSVG: '0% 0%',
-        attr: { 'stroke-width': 100 },
+        attr: { 'stroke-width': 120 },
         opacity: 0,
       });
 
       const tl = gsap.timeline({
-        defaults: { duration: 1.4, ease: 'sine.inOut' },
+        defaults: { duration: 1.2, ease: 'power4.inOut' },
         onComplete: () => {
           tl.kill();
           resolve();
         },
       });
 
-      tl.to(path, { opacity: 1, duration: 0.5 });
+      tl.to(path, { opacity: 1, duration: 0.4 });
       tl.to(path, { drawSVG: '0% 100%' }, '<');
-      tl.to(path, { attr: { 'stroke-width': 400 } }, '<+=0.18');
+      tl.to(path, { attr: { 'stroke-width': 280 } }, '-=0.6');
     });
   }, []);
 
@@ -94,15 +117,18 @@ export default function TransitionProvider({ children }: { children: React.React
     return new Promise((resolve) => {
       const wrapper = document.querySelector('.transition__svg__wrapper') as HTMLElement;
       const path = wrapper?.querySelector('svg path');
+      const contentChildren = getContentChildren();
 
       if (!wrapper || !path) {
         resolve();
         return;
       }
 
+      if (contentChildren) hideContent(contentChildren);
+
       const tl = gsap.timeline({
-        defaults: { duration: 1, ease: 'sine.inOut' },
-        onComplete: () => {
+        defaults: { duration: 0.9, ease: 'power4.inOut' },
+        onComplete: async () => {
           gsap.set(wrapper, {
             pointerEvents: 'none',
             autoAlpha: 0,
@@ -110,22 +136,25 @@ export default function TransitionProvider({ children }: { children: React.React
           });
           gsap.set(path, {
             drawSVG: '0% 0%',
-            attr: { 'stroke-width': 100 },
+            attr: { 'stroke-width': 120 },
+            opacity: 0,
           });
           getBody().classList.remove('is__transitioning');
+
+          if (contentChildren) {
+            await animateContentIn(contentChildren);
+          }
+
           tl.kill();
           resolve();
         },
       });
 
-      tl.to(path, { attr: { 'stroke-width': 100 } });
-      tl.to(path, { drawSVG: '100% 100%' }, '<+=0.45');
+      tl.to(path, { attr: { 'stroke-width': 120 } });
+      tl.to(path, { drawSVG: '100% 100%' }, '-=0.3');
+      tl.to(path, { opacity: 0 }, '-=0.4');
     });
   }, []);
-
-  // ============================================================
-  // TRANSITION TWO — Clip-path Overlay
-  // ============================================================
 
   const t2Before = useCallback((targetRoute: string) => {
     const overlay = document.querySelector('.transition__overlay') as HTMLElement;
@@ -134,10 +163,8 @@ export default function TransitionProvider({ children }: { children: React.React
     body.classList.add('is__transitioning');
     overlay.classList.add('team__transition');
 
-    const clip = getPercentageVerticalClip();
-
     gsap.set(overlay, {
-      '--clip': `polygon(0% ${50 - clip}%, 0% ${50 - clip}%, 0% ${50 + clip}%, 0% ${50 + clip}%)`,
+      clipPath: 'polygon(0% 45%, 100% 45%, 100% 55%, 0% 55%)',
     });
 
     const titleEl = overlay.querySelector('.title__destination') as HTMLElement;
@@ -153,7 +180,6 @@ export default function TransitionProvider({ children }: { children: React.React
     if (titleEl) {
       splitTitle.current = new SplitText(titleEl, {
         type: 'words',
-        mask: 'words',
         wordsClass: 'words',
       });
     }
@@ -162,7 +188,6 @@ export default function TransitionProvider({ children }: { children: React.React
   const t2Leave = useCallback((): Promise<void> => {
     return new Promise((resolve) => {
       const overlay = document.querySelector('.transition__overlay') as HTMLElement;
-      const clip = getPercentageVerticalClip();
 
       gsap.set(overlay, {
         pointerEvents: 'auto',
@@ -171,7 +196,7 @@ export default function TransitionProvider({ children }: { children: React.React
       });
 
       const tl = gsap.timeline({
-        defaults: { duration: 1, ease: 'expo.inOut' },
+        defaults: { duration: 1, ease: 'power4.inOut' },
         onComplete: () => {
           tl.kill();
           resolve();
@@ -179,11 +204,7 @@ export default function TransitionProvider({ children }: { children: React.React
       });
 
       tl.to(overlay, {
-        '--clip': `polygon(0% ${50 - clip}%, 100% ${50 - clip}%, 100% ${50 + clip}%, 0% ${50 + clip}%)`,
-      });
-
-      tl.to(overlay, {
-        '--clip': 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+        clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
       });
     });
   }, []);
@@ -191,10 +212,13 @@ export default function TransitionProvider({ children }: { children: React.React
   const t2After = useCallback((): Promise<void> => {
     return new Promise((resolve) => {
       const overlay = document.querySelector('.transition__overlay') as HTMLElement;
+      const contentChildren = getContentChildren();
+
+      if (contentChildren) hideContent(contentChildren);
 
       const tl = gsap.timeline({
-        defaults: { duration: 1, ease: 'hop' },
-        onComplete: () => {
+        defaults: { duration: 0.9, ease: 'power4.inOut' },
+        onComplete: async () => {
           if (splitTitle.current) {
             splitTitle.current.revert();
             splitTitle.current = null;
@@ -209,6 +233,10 @@ export default function TransitionProvider({ children }: { children: React.React
           getBody().classList.remove('is__transitioning');
           overlay.classList.remove('team__transition');
 
+          if (contentChildren) {
+            await animateContentIn(contentChildren);
+          }
+
           tl.kill();
           resolve();
         },
@@ -219,33 +247,25 @@ export default function TransitionProvider({ children }: { children: React.React
           yPercent: -120,
           duration: 0.5,
           stagger: { amount: 0.25 },
-          ease: 'elastic.in(1, 1)',
-        });
+          ease: 'power2.in',
+        }, 0);
       }
 
       tl.to(
         overlay,
         {
-          '--clip': 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
+          clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
         },
-        '<+0.25',
+        '-=0.1',
       );
     });
   }, []);
-
-  // ============================================================
-  // ROUTE MAPPING
-  // ============================================================
 
   function getTransitionType(route: string): 't1' | 't2' | 'none' {
     if (route === '/about' || route === '/services' || route === '/contact') return 't1';
     if (route === '/work' || route === '/process') return 't2';
     return 'none';
   }
-
-  // ============================================================
-  // "AFTER" PHASE — triggered by route change
-  // ============================================================
 
   useEffect(() => {
     if (phase.current === 'idle') return;
@@ -269,15 +289,11 @@ export default function TransitionProvider({ children }: { children: React.React
       phase.current = 'idle';
       setPhaseState('idle');
       pendingRoute.current = null;
+      prevPathname.current = pathname;
     };
 
     runAfter();
-    prevPathname.current = pathname;
   }, [pathname, t1After, t2After]);
-
-  // ============================================================
-  // NAVIGATE — called before route changes
-  // ============================================================
 
   const navigate = useCallback(
     async (targetRoute: string) => {
@@ -319,12 +335,8 @@ export default function TransitionProvider({ children }: { children: React.React
         pendingRoute.current = null;
       }
     },
-    [router, t1Before, t2Before, t1Leave, t2Leave, t1After, t2After],
+    [router, t1Before, t2Before, t1Leave, t2Leave],
   );
-
-  // ============================================================
-  // CLICK DELEGATION
-  // ============================================================
 
   useEffect(() => {
     const handleNavClick = (e: MouseEvent) => {

@@ -1,3 +1,5 @@
+'use client';
+
 export default function ArchiveTransitionSvg() {
   return (
     <div className="transition__svg__wrapper" aria-hidden="true">
