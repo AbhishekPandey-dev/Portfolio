@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useRef } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { GithubIcon, MailIcon } from "@animateicons/react/lucide";
-import BubbleMenu from "./bubble-menu";
-import PillNavLink from "./PillNavLink";
+import BubbleMenu from "./ui/BubbleMenu";
+import PillNavLink from "./ui/PillNavLink";
 
 type LinkItem = {
   label: string;
@@ -22,6 +23,14 @@ type CTA = {
   href: string;
 };
 
+const DEFAULT_LINKS: LinkItem[] = [
+  { label: "About", href: "/about" },
+  { label: "Work", href: "/work" },
+  { label: "Services", href: "/services" },
+  { label: "Process", href: "/process" },
+  { label: "Contact", href: "/contact" },
+];
+
 type NavbarProps = {
   wordmark?: string;
   links?: LinkItem[];
@@ -31,90 +40,164 @@ type NavbarProps = {
 
 export function Navbar({
   wordmark = "ABHISHEK",
-  links = [
-    { label: "About", href: "#about" },
-    { label: "Work", href: "#work" },
-    { label: "Services", href: "#services" },
-    { label: "Process", href: "#process" },
-    { label: "Contact", href: "#contact" },
-  ],
+  links = DEFAULT_LINKS,
   socials = {
     github: "https://github.com/AbhishekPandey-dev/",
     email: "mailto:abhishek@pixelforge.in",
   },
-  cta = { label: "Let's talk", href: "#contact" },
+  cta = { label: "Let's talk", href: "/contact" },
 }: NavbarProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const mobileMenuId = "primary-mobile-navigation";
-
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+  const [isExpanded, setIsExpanded] = useState(!isHome);
+  const [isPastHero, setIsPastHero] = useState(false);
+  const navRef = useRef<HTMLDivElement>(null);
   const githubIconRef = useRef<any>(null);
   const mailIconRef = useRef<any>(null);
 
+  const isShowingFull = isExpanded || isPastHero || !isHome;
+
+  const close = useCallback(() => {
+    if (!isPastHero && isHome) setIsExpanded(false);
+  }, [isPastHero, isHome]);
+
+  const toggle = useCallback(() => {
+    if (isHome) setIsExpanded((prev) => !prev);
+  }, [isHome]);
+
   useEffect(() => {
-    // Autoplay animation on load
+    if (isHome) {
+      setIsExpanded(false);
+      setIsPastHero(false);
+    } else {
+      setIsExpanded(true);
+      setIsPastHero(true);
+    }
+  }, [isHome]);
+
+  useEffect(() => {
     const triggerAnimations = () => {
       githubIconRef.current?.startAnimation();
       mailIconRef.current?.startAnimation();
     };
-
-    // Trigger immediately
     triggerAnimations();
-
-    // Loop trigger every 2000ms
     const interval = setInterval(triggerAnimations, 2000);
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isHome) return;
+    const hero = document.querySelector("#hero-section");
+    if (!hero) return;
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setIsOpen(false);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const heroBottom = entry.boundingClientRect.bottom;
+        const viewportHeight = window.innerHeight;
+        const scrolledPast = heroBottom < viewportHeight * 0.4;
+        setIsPastHero(scrolledPast);
+        if (scrolledPast) {
+          setIsExpanded(false);
+        }
+      },
+      { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] }
+    );
+
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, [isHome]);
+
+  useEffect(() => {
+    if (!isExpanded || isPastHero || !isHome) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isExpanded, isPastHero, close, isHome]);
+
+  useEffect(() => {
+    if (!isExpanded || isPastHero || !isHome) return;
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        close();
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen]);
+    const timer = setTimeout(() => {
+      document.addEventListener("mousedown", handleClickOutside);
+    }, 0);
 
-  // Framer Motion variant configs for premium entry cascades
-  const menuVariants: any = {
-    closed: {
-      opacity: 0,
-      scale: 0.95,
-      y: -15,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 30,
-        staggerChildren: 0.05,
-        staggerDirection: -1,
-      },
-    },
-    open: {
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isExpanded, isPastHero, close, isHome]);
+
+  const navSpring = {
+    type: "spring" as const,
+    stiffness: 380,
+    damping: 26,
+    mass: 0.65,
+  };
+
+  const contentSlide = {
+    hidden: { opacity: 0, x: -12, filter: "blur(2px)" },
+    visible: {
       opacity: 1,
-      scale: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 280,
-        damping: 24,
-        staggerChildren: 0.07,
-        delayChildren: 0.1,
-      },
+      x: 0,
+      filter: "blur(0px)",
+      transition: { duration: 0.22, ease: "easeOut" as const },
+    },
+    exit: {
+      opacity: 0,
+      x: -8,
+      filter: "blur(1px)",
+      transition: { duration: 0.12, ease: "easeIn" as const },
     },
   };
 
-  const itemVariants: any = {
-    closed: { opacity: 0, y: 15 },
-    open: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 20 } },
+  const listVariants = {
+    hidden: { transition: { staggerChildren: 0.04, staggerDirection: -1 } },
+    visible: { transition: { staggerChildren: 0.04 } },
+  };
+
+  const linkVariants = {
+    hidden: { opacity: 0, x: -10, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      scale: 1,
+      transition: { type: "spring" as const, stiffness: 400, damping: 24 },
+    },
+  };
+
+  const socialsVariants = {
+    hidden: { opacity: 0, x: -8 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { delay: 0.08, duration: 0.18, ease: "easeOut" as const },
+    },
+    exit: { opacity: 0, x: -6, transition: { duration: 0.1 } },
+  };
+
+  const ctaVariants = {
+    hidden: { opacity: 0, scale: 0.92, x: -8 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      x: 0,
+      transition: { delay: 0.12, type: "spring" as const, stiffness: 400, damping: 22 },
+    },
+    exit: { opacity: 0, scale: 0.95, x: -6, transition: { duration: 0.1 } },
   };
 
   return (
     <header className="fixed inset-x-0 top-3 z-50 px-3 pointer-events-none sm:top-4 lg:px-0">
-      {/* Mobile & Tablet Header Pod with BubbleMenu */}
-      <div className="lg:hidden w-full relative">
+      <div className="lg:hidden w-full relative pointer-events-auto">
         <BubbleMenu
           logo={
             <div className="flex items-center gap-2 select-none">
@@ -131,7 +214,7 @@ export function Navbar({
             label: link.label.toLowerCase(),
             href: link.href,
             rotation: idx % 2 === 0 ? -6 : 6,
-            hoverStyles: { bgColor: "#ED1C24", textColor: "#ffffff" }
+            hoverStyles: { bgColor: "#ED1C24", textColor: "#ffffff" },
           }))}
           socials={socials}
           menuBg="rgba(10, 10, 10, 0.45)"
@@ -143,74 +226,150 @@ export function Navbar({
         />
       </div>
 
-      <nav
-        aria-label="Primary"
-        className="mx-auto hidden w-fit items-center gap-3 rounded-full bg-[#0a0a0aa0] px-4 py-1.5 border border-white/12 shadow-[inset_0_1px_1px_rgba(255,255,255,0.18),0_12px_44px_rgba(0,0,0,0.65)] backdrop-blur-2xl text-white/90 pointer-events-auto lg:flex"
+      <div
+        ref={navRef}
+        className="hidden lg:flex pointer-events-auto justify-center"
       >
-        <Link
-          href="/"
-          className="text-base font-anton text-white tracking-wider transition-opacity duration-200 hover:opacity-70"
-          data-cursor="hover"
+        <motion.nav
+          aria-label="Primary"
+          layout
+          style={{ originX: 0.5, originY: 0.5 }}
+          className="flex items-center rounded-full bg-[#0a0a0aa0] border border-white/12 backdrop-blur-2xl text-white/90 overflow-hidden"
+          animate={{
+            paddingLeft: isShowingFull ? "16px" : "28px",
+            paddingRight: isShowingFull ? "16px" : "24px",
+            paddingTop: isShowingFull ? "6px" : "10px",
+            paddingBottom: isShowingFull ? "6px" : "10px",
+            borderColor:
+              isExpanded && !isPastHero
+                ? "rgba(237,28,36,0.45)"
+                : "rgba(255,255,255,0.12)",
+            boxShadow:
+              isExpanded && !isPastHero
+                ? "inset 0 1px 1px rgba(255,255,255,0.18), 0 12px 44px rgba(237,28,36,0.12), 0 12px 44px rgba(0,0,0,0.65)"
+                : "inset 0 1px 1px rgba(255,255,255,0.18), 0 12px 44px rgba(0,0,0,0.65)",
+          }}
+          transition={navSpring}
         >
-          {wordmark}
-        </Link>
-
-        <ul className="flex items-center gap-2">
-          {links.map((link) => (
-            <li key={link.href}>
-              <PillNavLink
-                label={link.label}
-                href={link.href}
-                baseColor="#ED1C24"
-                textColor="rgba(255,255,255,0.85)"
-                hoverTextColor="#ffffff"
-              />
-            </li>
-          ))}
-        </ul>
-
-        <div className="h-6 w-px bg-white/15" aria-hidden="true" />
-
-        <div className="flex items-center gap-2">
-          {socials?.github ? (
-            <motion.a
-              whileHover={{ scale: 1.12, rotate: 6 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 450, damping: 25 }}
-              href={socials.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub profile"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white/85 transition-colors duration-150 hover:bg-white/5 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
-              data-cursor="hover"
+          <div className="flex items-center">
+            <span
+              className="text-xl font-anton text-white tracking-wider shrink-0 cursor-default select-none"
+              onClick={() => {
+                if (!isShowingFull) toggle();
+              }}
             >
-              <GithubIcon ref={githubIconRef} size={20} color="#ffffff" />
-            </motion.a>
-          ) : null}
+              {wordmark}
+            </span>
 
-          {socials?.email ? (
-            <motion.a
-              whileHover={{ scale: 1.12, rotate: -6 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 450, damping: 25 }}
-              href={socials.email}
-              aria-label="Send email"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white/85 transition-colors duration-150 hover:bg-white/5 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
-              data-cursor="hover"
-            >
-              <MailIcon ref={mailIconRef} size={20} color="#ffffff" />
-            </motion.a>
-          ) : null}
-        </div>
+            <AnimatePresence mode="wait">
+              {!isShowingFull ? (
+                <motion.span
+                  key="dot"
+                  variants={contentSlide}
+                  initial="visible"
+                  animate="visible"
+                  exit="exit"
+                  className="relative flex h-2 w-2 ml-2 shrink-0"
+                >
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ED1C24] opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ED1C24]" />
+                </motion.span>
+              ) : (
+                <motion.div
+                  key="content"
+                  variants={contentSlide}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  className="flex items-center"
+                >
+                  <div className="w-3 shrink-0" />
 
-        <a
-          href={cta.href}
-          className="inline-flex items-center rounded-full bg-white px-5 py-2 text-sm font-serif italic font-semibold text-black transition-colors duration-200 hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black/70"
-          data-cursor="hover"
-        >
-          {cta.label}
-        </a>
-      </nav>
+                  <motion.ul
+                    variants={listVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="flex items-center gap-2"
+                  >
+                    {links.map((link) => (
+                      <motion.li
+                        key={link.href}
+                        variants={linkVariants}
+                        className="shrink-0"
+                      >
+                        <PillNavLink
+                          label={link.label}
+                          href={link.href}
+                          baseColor="#ED1C24"
+                          textColor="rgba(255,255,255,0.85)"
+                          hoverTextColor="#ffffff"
+                        />
+                      </motion.li>
+                    ))}
+                  </motion.ul>
+
+                  <motion.div
+                    variants={socialsVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    className="flex items-center gap-2 ml-3"
+                  >
+                    <div className="h-6 w-px bg-white/15 shrink-0" />
+                    <div className="flex items-center gap-2">
+                      {socials?.github ? (
+                        <motion.a
+                          whileHover={{ scale: 1.12, rotate: 6 }}
+                          whileTap={{ scale: 0.95 }}
+                          transition={{ type: "spring", stiffness: 450, damping: 25 }}
+                          href={socials.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="GitHub profile"
+                          className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white/85 transition-colors duration-150 hover:bg-white/5 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+                          data-cursor="hover"
+                        >
+                          <GithubIcon ref={githubIconRef} size={20} color="#ffffff" />
+                        </motion.a>
+                      ) : null}
+
+                      {socials?.email ? (
+                        <motion.a
+                          whileHover={{ scale: 1.12, rotate: -6 }}
+                          whileTap={{ scale: 0.95 }}
+                          transition={{ type: "spring", stiffness: 450, damping: 25 }}
+                          href={socials.email}
+                          aria-label="Send email"
+                          className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white/85 transition-colors duration-150 hover:bg-white/5 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+                          data-cursor="hover"
+                        >
+                          <MailIcon ref={mailIconRef} size={20} color="#ffffff" />
+                        </motion.a>
+                      ) : null}
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    variants={ctaVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    className="ml-3 shrink-0"
+                  >
+                    <a
+                      href={cta.href}
+                      className="inline-flex items-center rounded-full bg-white px-5 py-2 text-sm font-serif italic font-semibold text-black transition-colors duration-200 hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black/70"
+                      data-cursor="hover"
+                    >
+                      {cta.label}
+                    </a>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.nav>
+      </div>
     </header>
   );
 }

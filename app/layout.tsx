@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { Anton, Poppins, B612 } from 'next/font/google';
+import { Navbar } from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import './globals.css';
 
 const anton = Anton({
@@ -39,7 +41,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${anton.variable} ${poppins.variable} ${b612.variable} font-sans`} suppressHydrationWarning>{children}</body>
+      <body className={`${anton.variable} ${poppins.variable} ${b612.variable} font-sans`} suppressHydrationWarning>
+        <Navbar />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }

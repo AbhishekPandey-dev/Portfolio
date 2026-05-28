@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
+import Link from 'next/link'
+import { GithubIcon, MailIcon } from '@animateicons/react/lucide'
 
 const images = [
   '/assets/tech_icons/ANGULAR.png',
@@ -24,9 +26,19 @@ function getImageSize(w: number) {
   return 150
 }
 
+const FOOTER_LINKS = [
+  { label: 'About', href: '/about' },
+  { label: 'Work', href: '/work' },
+  { label: 'Services', href: '/services' },
+  { label: 'Process', href: '/process' },
+  { label: 'Contact', href: '/contact' },
+]
+
 export default function Footer() {
   const rootRef = useRef<HTMLElement>(null)
   const textRef = useRef<HTMLParagraphElement>(null)
+  const githubIconRef = useRef<any>(null)
+  const mailIconRef = useRef<any>(null)
 
   useEffect(() => {
     const rootEl = rootRef.current!
@@ -37,11 +49,8 @@ export default function Footer() {
     let oldIncrY = 0
     let firstMove = true
     let indexImg = 0
-    let frameId: number | null = null
 
-    const prefersReduced = window.matchMedia(
-      '(prefers-reduced-motion: reduce)',
-    ).matches
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReduced) return
 
     const isCoarse = window.matchMedia('(hover: none)').matches
@@ -206,61 +215,58 @@ export default function Footer() {
     }
 
     rootEl.addEventListener('mousemove', handleMouseMove)
-    rootEl.addEventListener('touchstart', handleTouchMove, {
-      passive: true,
-    } as AddEventListenerOptions)
-    rootEl.addEventListener('touchmove', handleTouchMove, {
-      passive: true,
-    } as AddEventListenerOptions)
+    rootEl.addEventListener('touchstart', handleTouchMove, { passive: true } as AddEventListenerOptions)
+    rootEl.addEventListener('touchmove', handleTouchMove, { passive: true } as AddEventListenerOptions)
 
     return () => {
-      if (frameId) cancelAnimationFrame(frameId)
       rootEl.removeEventListener('mousemove', handleMouseMove)
       rootEl.removeEventListener('touchstart', handleTouchMove)
       rootEl.removeEventListener('touchmove', handleTouchMove)
     }
   }, [])
 
+  useEffect(() => {
+    githubIconRef.current?.startAnimation()
+    mailIconRef.current?.startAnimation()
+    const interval = setInterval(() => {
+      githubIconRef.current?.startAnimation()
+      mailIconRef.current?.startAnimation()
+    }, 2000)
+    return () => clearInterval(interval)
+  }, [])
+
   return (
     <footer
       ref={rootRef}
-      className="relative h-full w-full min-h-screen overflow-hidden select-none"
+      className="relative min-h-screen w-full overflow-hidden select-none"
       style={{ background: '#000', color: '#f1f1f1' }}
     >
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           zIndex: 2,
-          background:
-            'radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.7) 100%)',
+          background: 'radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.7) 100%)',
         }}
       />
 
       <div
-        className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none"
+        className="absolute bottom-0 left-0 right-0 h-64 pointer-events-none"
         style={{
           zIndex: 3,
           background: 'linear-gradient(to top, #000 20%, transparent)',
         }}
       />
 
+      {/* Particle call to action */}
       <p
         ref={textRef}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-1 pointer-events-none"
         style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
           fontSize: 'clamp(28px, 5.5vw, 72px)',
           textAlign: 'center',
           letterSpacing: '-0.03em',
           fontFamily: 'var(--font-poppins), sans-serif',
           fontWeight: 700,
-          pointerEvents: 'none',
-          zIndex: 1,
           lineHeight: 1.1,
         }}
       >
@@ -292,6 +298,46 @@ export default function Footer() {
           or drag
         </span>
       </p>
+
+      {/* Standard footer content */}
+      <div className="absolute bottom-0 left-0 right-0 z-10 px-6 pb-8 md:px-12">
+        <div className="mx-auto max-w-6xl">
+          <div className="flex flex-col items-center gap-6 md:flex-row md:justify-between">
+            <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+              {FOOTER_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm text-white/50 transition-colors duration-200 hover:text-white"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+            <div className="flex items-center gap-3">
+              <a
+                href="https://github.com/AbhishekPandey-dev/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub profile"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white/60 transition-colors duration-200 hover:border-[#ED1C24]/50 hover:bg-[#ED1C24]/16 hover:text-white"
+              >
+                <GithubIcon ref={githubIconRef} size={18} color="currentColor" />
+              </a>
+              <a
+                href="mailto:abhishek@pixelforge.in"
+                aria-label="Send email"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white/60 transition-colors duration-200 hover:border-[#ED1C24]/50 hover:bg-[#ED1C24]/16 hover:text-white"
+              >
+                <MailIcon ref={mailIconRef} size={18} color="currentColor" />
+              </a>
+            </div>
+          </div>
+          <p className="mt-4 text-center text-xs text-white/30 md:text-left">
+            &copy; {new Date().getFullYear()} Abhishek Pandey. All rights reserved.
+          </p>
+        </div>
+      </div>
     </footer>
   )
 }
