@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Anton, Poppins, B612 } from 'next/font/google';
 import { Navbar } from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import ClickSpark from '@/components/ui/ClickSpark';
 import './globals.css';
 
 const anton = Anton({
@@ -43,7 +44,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={`${anton.variable} ${poppins.variable} ${b612.variable} font-sans`} suppressHydrationWarning>
         <Navbar />
-        {children}
+        <ClickSpark
+          sparkColor="#fff"
+          sparkSize={10}
+          sparkRadius={15}
+          sparkCount={8}
+          duration={400}
+        >
+          {children}
+        </ClickSpark>
         <Footer />
       </body>
     </html>
