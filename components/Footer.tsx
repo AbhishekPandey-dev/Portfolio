@@ -209,7 +209,7 @@ export default function Footer() {
         '<',
       )
 
-      indexImg = (indexImg + 1) % techIconKeys.length
+      indexImg = Math.floor(Math.random() * techIconKeys.length)
     }
 
     rootEl.addEventListener('mousemove', handleMouseMove)
@@ -236,63 +236,19 @@ export default function Footer() {
   return (
     <footer
       ref={rootRef}
-      className="relative min-h-screen w-full overflow-hidden select-none"
-      style={{ background: '#000', color: '#f1f1f1' }}
+      className="relative min-h-screen w-full overflow-hidden select-none bg-black text-[#f1f1f1]"
     >
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          zIndex: 2,
-          background: 'radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.7) 100%)',
-        }}
-      />
+      <div className="footer-gradient-radial absolute inset-0 pointer-events-none" />
 
-      <div
-        className="absolute bottom-0 left-0 right-0 h-64 pointer-events-none"
-        style={{
-          zIndex: 3,
-          background: 'linear-gradient(to top, #000 20%, transparent)',
-        }}
-      />
+      <div className="footer-gradient-linear absolute bottom-0 left-0 right-0 h-64 pointer-events-none" />
 
       {/* Particle call to action */}
       <p
         ref={textRef}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-1 pointer-events-none"
-        style={{
-          fontSize: 'clamp(28px, 5.5vw, 72px)',
-          textAlign: 'center',
-          letterSpacing: '-0.03em',
-          fontFamily: 'var(--font-poppins), sans-serif',
-          fontWeight: 700,
-          lineHeight: 1.1,
-        }}
+        className="footer-cta-text absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-1 pointer-events-none text-center font-bold tracking-[-0.03em]"
       >
-        <span
-          style={{
-            display: 'block',
-            width: 'max-content',
-            maxWidth: '90vw',
-            background: 'linear-gradient(135deg, #fff 40%, #888)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          Move your mouse
-        </span>
-        <span
-          className="font-b612"
-          style={{
-            display: 'block',
-            width: 'max-content',
-            color: '#D3CDCB',
-            fontWeight: 400,
-            fontSize: '0.45em',
-            marginTop: '0.6em',
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-          }}
-        >
+        <span className="footer-gradient-text">Move your mouse</span>
+        <span className="font-b612 block w-max text-[#D3CDCB] font-normal text-[0.45em] mt-[0.6em] tracking-[0.08em] uppercase">
           or drag
         </span>
       </p>

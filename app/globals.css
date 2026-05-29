@@ -81,6 +81,33 @@ body {
   transform: scale(0);
 }
 
+/* Footer inline-style replacements */
+.footer-gradient-radial {
+  z-index: 2;
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.7) 100%);
+}
+
+.footer-gradient-linear {
+  z-index: 3;
+  background: linear-gradient(to top, #000 20%, transparent);
+}
+
+.footer-cta-text {
+  font-size: clamp(28px, 5.5vw, 72px);
+  font-family: var(--font-poppins), sans-serif;
+  line-height: 1.1;
+}
+
+.footer-gradient-text {
+  display: block;
+  width: max-content;
+  max-width: 90vw;
+  background: linear-gradient(135deg, #fff 40%, #888);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 @media (min-width: 1024px) {
   #hero-section h1 {
     font-size: clamp(8rem, 14vw, 18rem) !important;
