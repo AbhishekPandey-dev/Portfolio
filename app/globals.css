@@ -103,30 +103,6 @@ body.is__transitioning a {
   min-height: 100svh;
 }
 
-.content__wrapper {
-  width: 100%;
-  min-height: 100svh;
-  position: relative;
-}
-
-.content {
-  min-height: 100svh;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 7vh;
-  padding-top: 8vh;
-  align-items: center;
-  justify-content: center;
-}
-
-.content .title {
-  font-size: clamp(2rem, 15vw, 10rem);
-  text-transform: uppercase;
-  font-weight: 500;
-  line-height: 1;
-}
-
 /* ============================================
    TRANSITION 1 — SVG SPIRAL
    ============================================ */

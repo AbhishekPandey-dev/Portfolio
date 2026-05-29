@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useRef, useCallback, useState } from 'react';
+import { createContext, useEffect, useRef, useCallback, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import gsap from 'gsap';
 import { SplitText } from 'gsap/SplitText';
@@ -17,10 +17,6 @@ const TransitionContext = createContext<TransitionContextValue>({
   phase: 'idle',
 });
 
-export function useTransitionNavigate() {
-  return useContext(TransitionContext);
-}
-
 const OVERLAY_TEXT: Record<string, string> = {
   '/work': "Let See my Work and Capabilities",
   '/process': "Let See How i do this magical work",
@@ -28,15 +24,6 @@ const OVERLAY_TEXT: Record<string, string> = {
 
 function getBody() {
   return document.body;
-}
-
-function getPercentageVerticalClip(): number {
-  const titleEl = document.querySelector('.title__destination') as HTMLElement;
-  if (!titleEl) return 5;
-  const rect = titleEl.getBoundingClientRect();
-  const halfHeight = rect.height / 2;
-  const halfViewport = window.innerHeight / 2;
-  return (halfHeight / halfViewport) * 50;
 }
 
 function getContentChildren(): Element[] | null {
@@ -55,8 +42,8 @@ function animateContentIn(children: Element[]): Promise<void> {
     gsap.to(children, {
       y: 0,
       opacity: 1,
-      duration: 0.7,
-      stagger: 0.08,
+      duration: 0.25,
+      stagger: 0.04,
       ease: 'power3.out',
       clearProps: 'transform',
       onComplete: resolve,
@@ -100,16 +87,16 @@ export default function TransitionProvider({ children }: { children: React.React
       });
 
       const tl = gsap.timeline({
-        defaults: { duration: 1.2, ease: 'power4.inOut' },
+        defaults: { duration: 0.3, ease: 'power4.inOut' },
         onComplete: () => {
           tl.kill();
           resolve();
         },
       });
 
-      tl.to(path, { opacity: 1, duration: 0.4 });
+      tl.to(path, { opacity: 1, duration: 0.15 });
       tl.to(path, { drawSVG: '0% 100%' }, '<');
-      tl.to(path, { attr: { 'stroke-width': 280 } }, '-=0.6');
+      tl.to(path, { attr: { 'stroke-width': 280 } }, '-=0.15');
     });
   }, []);
 
@@ -127,7 +114,7 @@ export default function TransitionProvider({ children }: { children: React.React
       if (contentChildren) hideContent(contentChildren);
 
       const tl = gsap.timeline({
-        defaults: { duration: 0.9, ease: 'power4.inOut' },
+        defaults: { duration: 0.3, ease: 'power4.inOut' },
         onComplete: async () => {
           gsap.set(wrapper, {
             pointerEvents: 'none',
@@ -151,8 +138,8 @@ export default function TransitionProvider({ children }: { children: React.React
       });
 
       tl.to(path, { attr: { 'stroke-width': 120 } });
-      tl.to(path, { drawSVG: '100% 100%' }, '-=0.3');
-      tl.to(path, { opacity: 0 }, '-=0.4');
+      tl.to(path, { drawSVG: '100% 100%' }, '-=0.1');
+      tl.to(path, { opacity: 0 }, '-=0.15');
     });
   }, []);
 
@@ -196,7 +183,7 @@ export default function TransitionProvider({ children }: { children: React.React
       });
 
       const tl = gsap.timeline({
-        defaults: { duration: 1, ease: 'power4.inOut' },
+        defaults: { duration: 0.3, ease: 'power4.inOut' },
         onComplete: () => {
           tl.kill();
           resolve();
@@ -217,7 +204,7 @@ export default function TransitionProvider({ children }: { children: React.React
       if (contentChildren) hideContent(contentChildren);
 
       const tl = gsap.timeline({
-        defaults: { duration: 0.9, ease: 'power4.inOut' },
+        defaults: { duration: 0.3, ease: 'power4.inOut' },
         onComplete: async () => {
           if (splitTitle.current) {
             splitTitle.current.revert();
@@ -245,8 +232,8 @@ export default function TransitionProvider({ children }: { children: React.React
       if (splitTitle.current?.words) {
         tl.to(splitTitle.current.words, {
           yPercent: -120,
-          duration: 0.5,
-          stagger: { amount: 0.25 },
+          duration: 0.2,
+          stagger: { amount: 0.1 },
           ease: 'power2.in',
         }, 0);
       }
@@ -256,7 +243,7 @@ export default function TransitionProvider({ children }: { children: React.React
         {
           clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
         },
-        '-=0.1',
+        '-=0.05',
       );
     });
   }, []);

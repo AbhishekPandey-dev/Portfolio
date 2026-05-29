@@ -1,5 +1,3 @@
-"use client";
-
 const STEPS = [
   { number: "01", title: "Discovery", description: "Understanding your goals, audience, and requirements." },
   { number: "02", title: "Strategy", description: "Planning the architecture, tech stack, and timeline." },

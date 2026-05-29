@@ -1,5 +1,3 @@
-"use client";
-
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-black pt-28 pb-20 px-6 md:px-12">

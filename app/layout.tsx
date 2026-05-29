@@ -1,13 +1,15 @@
 import type { Metadata } from 'next';
 import { Anton, Poppins, B612 } from 'next/font/google';
+import dynamic from 'next/dynamic';
 import { Navbar } from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import ClickSpark from '@/components/ui/ClickSpark';
-import GSAPRegistry from '@/lib/gsap-registry';
-import TransitionProvider from '@/components/ui/transition-provider';
-import Transition1 from '@/components/ui/transition1';
-import Transition2 from '@/components/ui/transition2';
 import './globals.css';
+
+const Footer = dynamic(() => import('@/components/Footer'));
+const ClickSpark = dynamic(() => import('@/components/ui/ClickSpark'));
+const GSAPRegistry = dynamic(() => import('@/lib/gsap-registry'));
+const TransitionProvider = dynamic(() => import('@/components/ui/transition-provider'));
+const Transition1 = dynamic(() => import('@/components/ui/transition1'));
+const Transition2 = dynamic(() => import('@/components/ui/transition2'));
 
 const anton = Anton({
   weight: '400',

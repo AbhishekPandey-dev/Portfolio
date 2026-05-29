@@ -4,19 +4,7 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import Link from 'next/link'
 import { GithubIcon, MailIcon } from '@animateicons/react/lucide'
-
-const images = [
-  '/assets/tech_icons/ANGULAR.png',
-  '/assets/tech_icons/BOOTSTRAP.png',
-  '/assets/tech_icons/FIREBASE.png',
-  '/assets/tech_icons/GIT.png',
-  '/assets/tech_icons/GITHUB.png',
-  '/assets/tech_icons/HTML5.png',
-  '/assets/tech_icons/JAVA.png',
-  '/assets/tech_icons/JAVASCRIPT.png',
-  '/assets/tech_icons/JQUERY.png',
-  '/assets/tech_icons/MONGO DB.png',
-]
+import { techIconsSVGs, techIconKeys } from '@/lib/tech-icons-data'
 
 function getImageSize(w: number) {
   if (w < 480) return Math.min(w * 0.35, 160)
@@ -119,24 +107,34 @@ export default function Footer() {
       if (y > H - 200) return
 
       const size = getImageSize(window.innerWidth)
-      const image = document.createElement('img')
+      const wrapper = document.createElement('span')
+      const key = techIconKeys[indexImg]
+      wrapper.innerHTML = techIconsSVGs[key] || ''
 
-      image.src = images[indexImg]
-      image.alt = 'tech icon'
-      image.draggable = false
-      Object.assign(image.style, {
+      wrapper.draggable = false
+      Object.assign(wrapper.style, {
         width: size + 'px',
         height: size + 'px',
         position: 'absolute',
-        objectFit: 'contain',
-        borderRadius: '16px',
         zIndex: '5',
         willChange: 'transform',
         pointerEvents: 'none',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.6)',
       })
 
-      rootEl.appendChild(image)
+      const svgEl = wrapper.firstElementChild as HTMLElement
+      if (svgEl) {
+        Object.assign(svgEl.style, {
+          width: '100%',
+          height: '100%',
+          display: 'block',
+          filter: 'drop-shadow(0 8px 32px rgba(0,0,0,0.6))',
+          borderRadius: '8px',
+        })
+        svgEl.setAttribute('width', '100%')
+        svgEl.setAttribute('height', '100%')
+      }
+
+      rootEl.appendChild(wrapper)
 
       const vel = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
       const velNorm = Math.min(vel / 80, 2.5)
@@ -147,13 +145,13 @@ export default function Footer() {
 
       const tl = gsap.timeline({
         onComplete: () => {
-          if (image.parentNode === rootEl) rootEl.removeChild(image)
+          if (wrapper.parentNode === rootEl) rootEl.removeChild(wrapper)
           tl.kill()
         },
       })
 
       tl.fromTo(
-        image,
+        wrapper,
         {
           xPercent: -50 + spreadX,
           yPercent: -50 + spreadY,
@@ -170,7 +168,7 @@ export default function Footer() {
       )
 
       tl.fromTo(
-        image,
+        wrapper,
         { x },
         {
           x: '+=' + (deltaX * 2 + spreadX),
@@ -182,7 +180,7 @@ export default function Footer() {
       )
 
       tl.fromTo(
-        image,
+        wrapper,
         { y },
         {
           y: '+=' + (H - y + 120),
@@ -194,7 +192,7 @@ export default function Footer() {
         '<',
       )
 
-      tl.to(image, {
+      tl.to(wrapper, {
         x: '+=' + (deltaX * 1.4 + spreadX * 0.6),
         rotation: spin + (Math.random() - 0.5) * 40,
         ease: 'power2.in',
@@ -202,7 +200,7 @@ export default function Footer() {
       })
 
       tl.to(
-        image,
+        wrapper,
         {
           yPercent: 150,
           ease: 'back.in(' + bounce + ')',
@@ -211,7 +209,7 @@ export default function Footer() {
         '<',
       )
 
-      indexImg = (indexImg + 1) % images.length
+      indexImg = (indexImg + 1) % techIconKeys.length
     }
 
     rootEl.addEventListener('mousemove', handleMouseMove)

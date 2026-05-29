@@ -1,5 +1,3 @@
-"use client";
-
 const SERVICES = [
   {
     title: "Full Stack Development",

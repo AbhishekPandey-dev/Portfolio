@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 
 interface PillNavLinkProps {
@@ -32,7 +32,17 @@ export function PillNavLink({
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const tweenRef = useRef<gsap.core.Tween | null>(null);
 
+  const applyCssVars = () => {
+    const container = containerRef.current;
+    if (!container) return;
+    container.style.setProperty('--base', baseColor);
+    container.style.setProperty('--pill-bg', pillBgColor);
+    container.style.setProperty('--hover-text', hoverTextColor);
+    container.style.setProperty('--pill-text', textColor);
+  };
+
   useEffect(() => {
+    applyCssVars();
     const layout = () => {
       const circle = circleRef.current;
       const pill = containerRef.current;
@@ -97,7 +107,7 @@ export function PillNavLink({
       timelineRef.current?.kill();
       tweenRef.current?.kill();
     };
-  }, [label, ease]);
+  }, [label, ease, baseColor, pillBgColor, hoverTextColor, textColor]);
 
   const handleMouseEnter = () => {
     const tl = timelineRef.current;
@@ -121,18 +131,10 @@ export function PillNavLink({
     });
   };
 
-  const cssVars = {
-    '--base': baseColor,
-    '--pill-bg': pillBgColor,
-    '--hover-text': hoverTextColor,
-    '--pill-text': textColor,
-  } as React.CSSProperties;
-
   return (
     <a
       ref={containerRef}
       href={href}
-      style={cssVars}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className={`pill inline-flex items-center justify-center rounded-full text-[13px] tracking-wide relative overflow-hidden transition-colors duration-150 whitespace-nowrap cursor-pointer px-4 font-semibold ${className}`}
