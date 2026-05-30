@@ -1,9 +1,8 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import gsap from 'gsap'
 import Link from 'next/link'
-import { GithubIcon, MailIcon } from '@animateicons/react/lucide'
 import { techIconsSVGs, techIconKeys } from '@/lib/tech-icons-data'
 
 function getImageSize(w: number) {
@@ -14,19 +13,20 @@ function getImageSize(w: number) {
   return 150
 }
 
-const FOOTER_LINKS = [
-  { label: 'About', href: '/about' },
-  { label: 'Work', href: '/work' },
-  { label: 'Services', href: '/services' },
-  { label: 'Process', href: '/process' },
-  { label: 'Contact', href: '/contact' },
-]
-
 export default function Footer() {
   const rootRef = useRef<HTMLElement>(null)
-  const textRef = useRef<HTMLParagraphElement>(null)
-  const githubIconRef = useRef<any>(null)
-  const mailIconRef = useRef<any>(null)
+  const textRef = useRef<HTMLDivElement>(null)
+  const bottomRef = useRef<HTMLDivElement>(null)
+  const emailRef = useRef<HTMLButtonElement>(null)
+  const [copied, setCopied] = useState(false)
+  const copiedTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const copyEmail = useCallback(() => {
+    navigator.clipboard.writeText('abhishek@pixelforge.in')
+    setCopied(true)
+    if (copiedTimeout.current) clearTimeout(copiedTimeout.current)
+    copiedTimeout.current = setTimeout(() => setCopied(false), 2000)
+  }, [])
 
   useEffect(() => {
     const rootEl = rootRef.current!
@@ -224,13 +224,19 @@ export default function Footer() {
   }, [])
 
   useEffect(() => {
-    githubIconRef.current?.startAnimation()
-    mailIconRef.current?.startAnimation()
-    const interval = setInterval(() => {
-      githubIconRef.current?.startAnimation()
-      mailIconRef.current?.startAnimation()
-    }, 2000)
-    return () => clearInterval(interval)
+    if (bottomRef.current) {
+      gsap.fromTo(
+        bottomRef.current,
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          ease: 'power3.out',
+          duration: 0.8,
+          delay: 1.2,
+        },
+      )
+    }
   }, [])
 
   return (
@@ -242,54 +248,120 @@ export default function Footer() {
 
       <div className="footer-gradient-linear absolute bottom-0 left-0 right-0 h-64 pointer-events-none" />
 
-      {/* Particle call to action */}
-      <p
+      {/* CTA section */}
+      <div
         ref={textRef}
-        className="footer-cta-text absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-1 pointer-events-none text-center font-bold tracking-[-0.03em]"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-1 pointer-events-none text-center"
       >
-        <span className="footer-gradient-text">Move your mouse</span>
-        <span className="font-b612 block w-max text-[#D3CDCB] font-normal text-[0.45em] mt-[0.6em] tracking-[0.08em] uppercase">
-          or drag
+        <span className="footer-gradient-text font-anton text-[clamp(2.5rem,7vw,5.5rem)] leading-[1.05] tracking-[-0.02em] uppercase">
+          Ready to build
         </span>
-      </p>
+        <span className="footer-gradient-text font-anton text-[clamp(2.5rem,7vw,5.5rem)] leading-[1.05] tracking-[-0.02em] uppercase -mt-1">
+          something great?
+        </span>
+        <span className="text-white/45 text-xs md:text-sm mt-6 font-sans font-normal tracking-wide max-w-[28rem] leading-relaxed">
+          I&apos;m always open to new projects and ideas
+        </span>
+        <Link
+          href="/contact"
+          className="pointer-events-auto group relative mt-10 inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/[0.03] px-9 py-3.5 text-[13px] font-semibold text-white/85 tracking-wide uppercase transition-all duration-500 hover:border-[#D40000]/70 hover:bg-[#D40000] hover:text-white hover:shadow-[0_0_40px_-8px_rgba(212,0,0,0.45)] active:scale-[0.96]"
+        >
+          <span className="relative z-10">Start a Project</span>
+          <span className="relative z-10 text-lg transition-transform duration-300 group-hover:translate-x-1.5 group-hover:-translate-y-0.5">
+            →
+          </span>
+          <span className="absolute inset-0 rounded-full bg-gradient-to-r from-[#660000]/60 to-[#D40000]/60 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        </Link>
+      </div>
 
-      {/* Standard footer content */}
-      <div className="absolute bottom-0 left-0 right-0 z-10 px-6 pb-8 md:px-12">
+      {/* Bottom strip */}
+      <div
+        ref={bottomRef}
+        className="absolute bottom-0 left-0 right-0 z-10 px-6 pb-8 md:px-12"
+      >
         <div className="mx-auto max-w-6xl">
-          <div className="flex flex-col items-center gap-6 md:flex-row md:justify-between">
-            <div className="flex flex-wrap justify-center gap-4 md:gap-6">
-              {FOOTER_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-sm text-white/50 transition-colors duration-200 hover:text-white"
-                >
-                  {link.label}
-                </Link>
-              ))}
+          {/* Top row: availability + email */}
+          <div className="flex flex-col items-center gap-5 md:flex-row md:justify-between">
+            <div className="flex flex-col items-center md:items-start gap-1.5">
+              <div className="flex items-center gap-2.5">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D40000] opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#D40000]" />
+                </span>
+                <span className="text-sm font-medium text-white/80">
+                  Available for projects
+                </span>
+              </div>
+              <span className="ml-[22px] text-xs text-white/35">
+                Based in India &middot; Available worldwide
+              </span>
             </div>
-            <div className="flex items-center gap-3">
-              <a
-                href="https://github.com/AbhishekPandey-dev/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub profile"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white/60 transition-colors duration-200 hover:border-[#D40000]/50 hover:bg-[#D40000]/16 hover:text-white"
+
+            <button
+              ref={emailRef}
+              onClick={copyEmail}
+              className="group relative text-sm text-white/55 transition-colors duration-200 hover:text-white"
+              aria-label="Copy email address"
+            >
+              <span className="relative">
+                abhishek@pixelforge.in
+                <span className="absolute -bottom-px left-0 right-0 h-px bg-[#D40000]/60 scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
+              </span>
+              <span
+                className={`absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-[#D40000] px-2.5 py-1 text-[11px] font-medium text-white transition-all duration-300 ${
+                  copied
+                    ? 'pointer-events-auto opacity-100 translate-y-0'
+                    : 'pointer-events-none opacity-0 translate-y-1'
+                }`}
               >
-                <GithubIcon ref={githubIconRef} size={18} color="currentColor" />
-              </a>
-              <a
-                href="mailto:abhishek@pixelforge.in"
-                aria-label="Send email"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white/60 transition-colors duration-200 hover:border-[#D40000]/50 hover:bg-[#D40000]/16 hover:text-white"
-              >
-                <MailIcon ref={mailIconRef} size={18} color="currentColor" />
-              </a>
-            </div>
+                Copied!
+              </span>
+            </button>
           </div>
-          <p className="mt-4 text-center text-xs text-white/30 md:text-left">
-            &copy; {new Date().getFullYear()} Abhishek Pandey. All rights reserved.
-          </p>
+
+          {/* Decorative divider */}
+          <div className="flex items-center justify-center gap-3 my-5 md:my-6">
+            <span className="h-px flex-1 bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
+            <span className="inline-block text-white/15 text-sm animate-spin-slow select-none">
+              ✦
+            </span>
+            <span className="h-px flex-1 bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
+          </div>
+
+          {/* Bottom row: tech credit + back to top */}
+          <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between">
+            <div className="flex flex-col items-center md:items-start gap-1">
+              <div className="group/tech flex items-center gap-2 text-xs">
+                {['Next.js', 'React', 'GSAP', 'Tailwind'].map((tech, i) => (
+                  <span key={tech}>
+                    <span
+                      className="tech-item text-white/25 transition-colors duration-300 group-hover/tech:text-[#D40000]/70"
+                      style={{ transitionDelay: `${i * 60}ms` }}
+                    >
+                      {tech}
+                    </span>
+                    {i < 3 && (
+                      <span className="ml-2 text-white/[0.07]">&middot;</span>
+                    )}
+                  </span>
+                ))}
+              </div>
+              <span className="text-[11px] text-white/20">
+                &copy; {new Date().getFullYear()} Abhishek Pandey
+              </span>
+            </div>
+
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="group flex items-center gap-2 text-xs text-white/40 transition-colors duration-200 hover:text-white"
+              aria-label="Back to top"
+            >
+              <span>Back to top</span>
+              <span className="inline-block text-sm transition-transform duration-200 ease-out group-hover:-translate-y-1">
+                ↑
+              </span>
+            </button>
+          </div>
         </div>
       </div>
     </footer>

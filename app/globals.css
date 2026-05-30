@@ -242,3 +242,18 @@ body.is__transitioning a {
     width: 3px;
   }
 }
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+.tech-item {
+  transition-property: color;
+  transition-duration: 300ms;
+  transition-timing-function: ease-out;
+}
