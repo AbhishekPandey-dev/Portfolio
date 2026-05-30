@@ -1,9 +1,10 @@
 @import "tailwindcss";
 
 @theme {
-  --color-red: #ED1C24;
+  --color-red: #D40000;
+  --color-blood-red: #660000;
   --color-light-gray: #D3CDCB;
-  --color-off-white: #EFEEE8;
+  --color-white: #EFEEE8;
   --font-anton: "Anton", sans-serif;
   --font-sans: "Poppins", sans-serif;
   --font-b612: "B612", sans-serif;
@@ -39,7 +40,7 @@ body {
 }
 
 .pill .hover-circle {
-  background: var(--base, #ED1C24);
+  background: var(--base, #D40000);
   z-index: 1;
   display: block;
   will-change: transform;
@@ -161,7 +162,7 @@ body.is__transitioning a {
 }
 
 .svg__transition svg path {
-  stroke: var(--color-off-white);
+  stroke: var(--color-white);
 }
 
 /* ============================================
@@ -178,7 +179,7 @@ body.is__transitioning a {
   will-change: clip-path;
   pointer-events: none;
   visibility: hidden;
-  background: var(--color-off-white);
+  background: var(--color-white);
 }
 
 .transition__overlay.team__transition {
@@ -207,7 +208,7 @@ body.is__transitioning a {
 .transition__overlay .title__destination {
   font-family: var(--font-anton);
   font-size: clamp(1.5rem, 4vw, 3rem);
-  color: #ED1C24;
+  color: #D40000;
   text-align: center;
   font-weight: 400;
   line-height: 1.2;

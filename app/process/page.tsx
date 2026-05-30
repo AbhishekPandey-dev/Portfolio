@@ -18,7 +18,7 @@ export default function ProcessPage() {
           {STEPS.map((step) => (
             <div
               key={step.number}
-              className="group flex items-start gap-6 border-l-2 border-white/10 pl-6 transition-all duration-300 hover:border-[#ED1C24]"
+              className="group flex items-start gap-6 border-l-2 border-white/10 pl-6 transition-all duration-300 hover:border-[#D40000]"
             >
               <span className="font-anton text-3xl text-red shrink-0">
                 {step.number}

@@ -14,7 +14,7 @@ export default function ContactForm() {
           <input
             id="name"
             type="text"
-            className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white outline-none transition-colors duration-200 focus:border-[#ED1C24]/50 focus:bg-white/[0.06]"
+            className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white outline-none transition-colors duration-200 focus:border-[#D40000]/50 focus:bg-white/[0.06]"
             placeholder="Your name"
           />
         </div>
@@ -25,7 +25,7 @@ export default function ContactForm() {
           <input
             id="email"
             type="email"
-            className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white outline-none transition-colors duration-200 focus:border-[#ED1C24]/50 focus:bg-white/[0.06]"
+            className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white outline-none transition-colors duration-200 focus:border-[#D40000]/50 focus:bg-white/[0.06]"
             placeholder="your@email.com"
           />
         </div>
@@ -37,7 +37,7 @@ export default function ContactForm() {
         <textarea
           id="message"
           rows={5}
-          className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white outline-none transition-colors duration-200 focus:border-[#ED1C24]/50 focus:bg-white/[0.06] resize-none"
+          className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white outline-none transition-colors duration-200 focus:border-[#D40000]/50 focus:bg-white/[0.06] resize-none"
           placeholder="Tell me about your project..."
         />
       </div>

@@ -9,7 +9,7 @@ export default function WorkPage() {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-6 transition-all duration-300 hover:border-[#ED1C24]/40 hover:bg-white/[0.06]"
+              className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-6 transition-all duration-300 hover:border-[#D40000]/40 hover:bg-white/[0.06]"
             >
               <div className="mb-4 h-48 rounded-xl bg-white/5" />
               <h3 className="font-semibold text-white text-lg mb-2">

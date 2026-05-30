@@ -274,14 +274,14 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub profile"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white/60 transition-colors duration-200 hover:border-[#ED1C24]/50 hover:bg-[#ED1C24]/16 hover:text-white"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white/60 transition-colors duration-200 hover:border-[#D40000]/50 hover:bg-[#D40000]/16 hover:text-white"
               >
                 <GithubIcon ref={githubIconRef} size={18} color="currentColor" />
               </a>
               <a
                 href="mailto:abhishek@pixelforge.in"
                 aria-label="Send email"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white/60 transition-colors duration-200 hover:border-[#ED1C24]/50 hover:bg-[#ED1C24]/16 hover:text-white"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-white/60 transition-colors duration-200 hover:border-[#D40000]/50 hover:bg-[#D40000]/16 hover:text-white"
               >
                 <MailIcon ref={mailIconRef} size={18} color="currentColor" />
               </a>

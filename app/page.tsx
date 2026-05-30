@@ -20,7 +20,7 @@ export default function Home() {
                 morphTime={1}
                 cooldownTime={0.25}
                 className="font-bold"
-                textClassName="text-off-white font-bold whitespace-nowrap text-[clamp(0.75rem,1.5vw,1.25rem)] md:text-[1.5rem] text-right"
+                textClassName="text-white font-bold whitespace-nowrap text-[clamp(0.75rem,1.5vw,1.25rem)] md:text-[1.5rem] text-right"
               />
             </div>
           </div>

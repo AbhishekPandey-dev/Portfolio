@@ -179,8 +179,8 @@ export function Navbar({
                 {wordmark}
               </span>
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ED1C24] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ED1C24]"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D40000] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D40000]"></span>
               </span>
             </div>
           }
@@ -188,7 +188,7 @@ export function Navbar({
             label: link.label.toLowerCase(),
             href: link.href,
             rotation: idx % 2 === 0 ? -6 : 6,
-            hoverStyles: { bgColor: "#ED1C24", textColor: "#ffffff" },
+              hoverStyles: { bgColor: "#D40000", textColor: "#ffffff" },
           }))}
           socials={socials}
           menuBg="rgba(10, 10, 10, 0.45)"
@@ -216,11 +216,11 @@ export function Navbar({
             paddingBottom: isShowingFull ? 6 : 10,
             borderColor:
               isExpanded && !isPastHero
-                ? "rgba(237,28,36,0.40)"
+                ? "rgba(212,0,0,0.40)"
                 : "rgba(255,255,255,0.12)",
             boxShadow:
               isExpanded && !isPastHero
-                ? "inset 0 1px 1px rgba(255,255,255,0.18), 0 16px 48px rgba(237,28,36,0.10), 0 12px 44px rgba(0,0,0,0.65)"
+                ? "inset 0 1px 1px rgba(255,255,255,0.18), 0 16px 48px rgba(212,0,0,0.10), 0 12px 44px rgba(0,0,0,0.65)"
                 : "inset 0 1px 1px rgba(255,255,255,0.18), 0 12px 44px rgba(0,0,0,0.65)",
           }}
           transition={{
@@ -267,9 +267,9 @@ export function Navbar({
                 <motion.span
                   animate={{ opacity: [0.55, 1, 0.55], scale: [1, 1.4, 1] }}
                   transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute inline-flex h-full w-full rounded-full bg-[#ED1C24]"
+                  className="absolute inline-flex h-full w-full rounded-full bg-[#D40000]"
                 />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ED1C24]" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D40000]" />
               </span>
             </motion.span>
 
@@ -303,7 +303,7 @@ export function Navbar({
                     <PillNavLink
                       label={link.label}
                       href={link.href}
-                      baseColor="#ED1C24"
+                       baseColor="#D40000"
                       textColor="rgba(255,255,255,0.85)"
                       hoverTextColor="#ffffff"
                     />

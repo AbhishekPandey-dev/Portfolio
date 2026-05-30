@@ -7,7 +7,7 @@ interface PillNavLinkProps {
   label: string;
   href: string;
   className?: string;
-  baseColor?: string; // --base (background of hover-circle, e.g. #ED1C24 for red accent)
+  baseColor?: string; // --base (background of hover-circle, e.g. #D40000 for red accent)
   pillBgColor?: string; // --pill-bg (initial pill background)
   textColor?: string; // --pill-text (initial text color)
   hoverTextColor?: string; // --hover-text (hovered text color)
@@ -18,7 +18,7 @@ export function PillNavLink({
   label,
   href,
   className = '',
-  baseColor = '#ED1C24',
+  baseColor = '#D40000',
   pillBgColor = 'transparent',
   textColor = 'rgba(255,255,255,0.85)',
   hoverTextColor = '#ffffff',
