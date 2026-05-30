@@ -8,7 +8,19 @@ export default function Home() {
       className="relative h-screen w-full bg-black overflow-hidden"
       id="home-main"
     >
-      <section id="hero-section" className="relative h-screen w-full">
+      <section id="hero-section" className="relative h-screen w-full overflow-hidden">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="/assets/background.mp4" type="video/mp4" />
+          <source src="/assets/background.webm" type="video/webm" />
+        </video>
+        <div className="absolute inset-0 bg-black/40" />
         <div className="absolute inset-0 flex items-start justify-center pt-[12vh] md:pt-[8vh]">
           <div className="relative inline-block">
             <h1 className="font-anton text-red text-[clamp(5rem,22vw,18rem)] md:text-[clamp(8rem,15vw,20rem)] tracking-[-0.02em] leading-none text-center select-none">
