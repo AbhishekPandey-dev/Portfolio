@@ -253,3 +253,42 @@ body.is__transitioning a {
   transition-duration: 300ms;
   transition-timing-function: ease-out;
 }
+
+/* ============================================
+   BUTTON SWEEP — subtle background shine on hover
+   ============================================ */
+
+.btn-sweep {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.btn-sweep::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    transparent 35%,
+    rgba(255, 255, 255, 0.18) 50%,
+    transparent 65%,
+    transparent 100%
+  );
+  transform: translateX(-120%);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.btn-sweep:hover::after,
+.btn-sweep:focus-visible::after {
+  transform: translateX(120%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-sweep::after {
+    transition: none;
+  }
+}

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import gsap from 'gsap'
 import Link from 'next/link'
 import { techIconsSVGs, techIconKeys } from '@/lib/tech-icons-data'
+import { gsapEasings } from '@/lib/motion-tokens'
 
 function getImageSize(w: number) {
   if (w < 480) return Math.min(w * 0.35, 160)
@@ -19,6 +20,7 @@ export default function Footer() {
   const bottomRef = useRef<HTMLDivElement>(null)
   const emailRef = useRef<HTMLButtonElement>(null)
   const [copied, setCopied] = useState(false)
+  const [prefersReduced, setPrefersReduced] = useState(false)
   const copiedTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const copyEmail = useCallback(() => {
@@ -39,7 +41,7 @@ export default function Footer() {
     let indexImg = 0
 
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (prefersReduced) return
+    if (prefersReduced) return // re-checked via state for downstream effects
 
     const isCoarse = window.matchMedia('(hover: none)').matches
     const resetDist = window.innerWidth / (isCoarse ? 5 : 10)
@@ -59,7 +61,7 @@ export default function Footer() {
           y: 0,
           opacity: 1,
           stagger: 0.2,
-          ease: 'power4.out',
+          ease: gsapEasings.snappyOut,
           duration: 1.2,
           delay: 0.5,
         },
@@ -173,7 +175,7 @@ export default function Footer() {
         {
           x: '+=' + (deltaX * 2 + spreadX),
           rotation: 0,
-          ease: 'power2.out',
+          ease: gsapEasings.easeOut,
           duration: 0.45,
         },
         '<',
@@ -195,7 +197,7 @@ export default function Footer() {
       tl.to(wrapper, {
         x: '+=' + (deltaX * 1.4 + spreadX * 0.6),
         rotation: spin + (Math.random() - 0.5) * 40,
-        ease: 'power2.in',
+        ease: gsapEasings.easeIn,
         duration: 0.3,
       })
 
@@ -224,6 +226,7 @@ export default function Footer() {
   }, [])
 
   useEffect(() => {
+    if (prefersReduced) return
     if (bottomRef.current) {
       gsap.fromTo(
         bottomRef.current,
@@ -231,13 +234,13 @@ export default function Footer() {
         {
           y: 0,
           opacity: 1,
-          ease: 'power3.out',
+          ease: gsapEasings.smooth,
           duration: 0.8,
           delay: 1.2,
         },
       )
     }
-  }, [])
+  }, [prefersReduced])
 
   return (
     <footer
@@ -264,7 +267,7 @@ export default function Footer() {
         </span>
         <Link
           href="/contact"
-          className="pointer-events-auto group relative mt-10 inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/[0.03] px-9 py-3.5 text-[13px] font-semibold text-white/85 tracking-wide uppercase transition-all duration-500 hover:border-[#D40000]/70 hover:bg-[#D40000] hover:text-white hover:shadow-[0_0_40px_-8px_rgba(212,0,0,0.45)] active:scale-[0.96]"
+          className="btn-sweep pointer-events-auto group relative mt-10 inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/[0.03] px-9 py-3.5 text-sm font-semibold text-white/85 tracking-wide uppercase transition-[transform,background-color,border-color,box-shadow,color] duration-500 hover:border-[#D40000]/70 hover:bg-[#D40000] hover:text-white hover:shadow-[0_0_40px_-8px_rgba(212,0,0,0.45)] active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D40000] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
         >
           <span className="relative z-10">Start a Project</span>
           <span className="relative z-10 text-lg transition-transform duration-300 group-hover:translate-x-1.5 group-hover:-translate-y-0.5">
@@ -300,7 +303,7 @@ export default function Footer() {
             <button
               ref={emailRef}
               onClick={copyEmail}
-              className="group relative text-sm text-white/55 transition-colors duration-200 hover:text-white"
+              className="group relative text-sm text-white/70 transition-colors duration-200 hover:text-white"
               aria-label="Copy email address"
             >
               <span className="relative">
@@ -308,7 +311,7 @@ export default function Footer() {
                 <span className="absolute -bottom-px left-0 right-0 h-px bg-[#D40000]/60 scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
               </span>
               <span
-                className={`absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-[#D40000] px-2.5 py-1 text-[11px] font-medium text-white transition-all duration-300 ${
+                className={`absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-[#D40000] px-2.5 py-1 text-xs font-medium text-white transition-opacity duration-300 ${
                   copied
                     ? 'pointer-events-auto opacity-100 translate-y-0'
                     : 'pointer-events-none opacity-0 translate-y-1'
@@ -353,7 +356,7 @@ export default function Footer() {
 
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="group flex items-center gap-2 text-xs text-white/40 transition-colors duration-200 hover:text-white"
+              className="group flex items-center gap-2 text-xs text-white/70 transition-colors duration-200 hover:text-white"
               aria-label="Back to top"
             >
               <span>Back to top</span>

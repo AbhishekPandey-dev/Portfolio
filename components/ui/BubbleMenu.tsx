@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { ArrowLeft, ArrowUpRight, Menu, X } from 'lucide-react';
 import { GithubIcon, MailIcon } from '@animateicons/react/lucide';
+import { motionTokens } from '@/lib/motion-tokens';
 
 interface MenuItem {
   label: string;
@@ -126,9 +127,9 @@ export default function BubbleMenu({
     };
   }, [isOpen]);
 
-  const premiumEase = [0.22, 1, 0.36, 1] as const;
-  const exitEase = [0.4, 0, 1, 1] as const;
-  const itemEase = [0.2, 0.8, 0.2, 1] as const;
+  const premiumEase = motionTokens.easing.smooth;
+  const exitEase = motionTokens.easing.sharp;
+  const itemEase = motionTokens.easing.snap;
 
   const iconVariants = {
     initial: { rotate: -90, opacity: 0, scale: 0.65 },
@@ -285,7 +286,7 @@ export default function BubbleMenu({
                             background:
                               'linear-gradient(90deg, var(--mobile-item-accent), rgba(212,0,0,0))',
                           }}
-                          className="absolute inset-y-0 left-0 w-1 opacity-80 transition-all duration-300 group-hover:w-full group-hover:opacity-100 group-focus-visible:w-full group-focus-visible:opacity-100"
+                          className="absolute inset-y-0 left-0 w-1 opacity-80 transition-[width,opacity] duration-300 group-hover:w-full group-hover:opacity-100 group-focus-visible:w-full group-focus-visible:opacity-100"
                           aria-hidden="true"
                         />
                         <span className="relative z-10 flex items-baseline gap-3 font-sans capitalize">

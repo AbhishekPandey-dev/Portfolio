@@ -2,8 +2,10 @@
 
 import { createContext, useEffect, useRef, useCallback, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { useReducedMotion } from 'motion/react';
 import gsap from 'gsap';
 import { SplitText } from 'gsap/SplitText';
+import { gsapEasings } from '@/lib/motion-tokens';
 
 type TransitionPhase = 'idle' | 'setup' | 'leaving' | 'entering';
 
@@ -18,8 +20,12 @@ const TransitionContext = createContext<TransitionContextValue>({
 });
 
 const OVERLAY_TEXT: Record<string, string> = {
+  '/': "Welcome",
+  '/about': "About the Developer",
   '/work': "Let See my Work and Capabilities",
+  '/services': "Services I Offer",
   '/process': "Let See How i do this magical work",
+  '/contact': "Get in Touch",
 };
 
 function getBody() {
@@ -44,7 +50,7 @@ function animateContentIn(children: Element[]): Promise<void> {
       opacity: 1,
       duration: 0.25,
       stagger: 0.04,
-      ease: 'power3.out',
+      ease: gsapEasings.smooth,
       clearProps: 'transform',
       onComplete: resolve,
     });
@@ -54,6 +60,7 @@ function animateContentIn(children: Element[]): Promise<void> {
 export default function TransitionProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const reducedMotion = useReducedMotion();
   const phase = useRef<TransitionPhase>('idle');
   const pendingRoute = useRef<string | null>(null);
   const prevPathname = useRef(pathname);
@@ -87,7 +94,7 @@ export default function TransitionProvider({ children }: { children: React.React
       });
 
       const tl = gsap.timeline({
-        defaults: { duration: 0.3, ease: 'power4.inOut' },
+        defaults: { duration: 0.3, ease: gsapEasings.snappy },
         onComplete: () => {
           tl.kill();
           resolve();
@@ -114,7 +121,7 @@ export default function TransitionProvider({ children }: { children: React.React
       if (contentChildren) hideContent(contentChildren);
 
       const tl = gsap.timeline({
-        defaults: { duration: 0.3, ease: 'power4.inOut' },
+        defaults: { duration: 0.3, ease: gsapEasings.snappy },
         onComplete: async () => {
           gsap.set(wrapper, {
             pointerEvents: 'none',
@@ -183,7 +190,7 @@ export default function TransitionProvider({ children }: { children: React.React
       });
 
       const tl = gsap.timeline({
-        defaults: { duration: 0.3, ease: 'power4.inOut' },
+        defaults: { duration: 0.3, ease: gsapEasings.snappy },
         onComplete: () => {
           tl.kill();
           resolve();
@@ -204,7 +211,7 @@ export default function TransitionProvider({ children }: { children: React.React
       if (contentChildren) hideContent(contentChildren);
 
       const tl = gsap.timeline({
-        defaults: { duration: 0.3, ease: 'power4.inOut' },
+        defaults: { duration: 0.3, ease: gsapEasings.snappy },
         onComplete: async () => {
           if (splitTitle.current) {
             splitTitle.current.revert();
@@ -234,7 +241,7 @@ export default function TransitionProvider({ children }: { children: React.React
           yPercent: -120,
           duration: 0.2,
           stagger: { amount: 0.1 },
-          ease: 'power2.in',
+          ease: gsapEasings.easeIn,
         }, 0);
       }
 
@@ -250,7 +257,7 @@ export default function TransitionProvider({ children }: { children: React.React
 
   function getTransitionType(route: string): 't1' | 't2' | 'none' {
     if (route === '/about' || route === '/services' || route === '/contact') return 't1';
-    if (route === '/work' || route === '/process') return 't2';
+    if (route === '/work' || route === '/process' || route === '/') return 't2';
     return 'none';
   }
 
@@ -287,6 +294,11 @@ export default function TransitionProvider({ children }: { children: React.React
       if (phase.current !== 'idle') return;
       if (targetRoute === window.location.pathname) return;
 
+      if (reducedMotion) {
+        router.push(targetRoute);
+        return;
+      }
+
       const type = getTransitionType(targetRoute);
 
       if (type === 'none') {
@@ -322,10 +334,12 @@ export default function TransitionProvider({ children }: { children: React.React
         pendingRoute.current = null;
       }
     },
-    [router, t1Before, t2Before, t1Leave, t2Leave],
+    [router, t1Before, t2Before, t1Leave, t2Leave, reducedMotion],
   );
 
   useEffect(() => {
+    if (reducedMotion) return;
+
     const handleNavClick = (e: MouseEvent) => {
       const link = (e.target as HTMLElement).closest('a');
       if (!link) return;
@@ -337,7 +351,7 @@ export default function TransitionProvider({ children }: { children: React.React
         return;
       }
 
-      const nav = link.closest('nav, header');
+      const nav = link.closest('nav, header, footer');
       if (!nav) return;
 
       e.preventDefault();
@@ -346,7 +360,7 @@ export default function TransitionProvider({ children }: { children: React.React
 
     document.addEventListener('click', handleNavClick);
     return () => document.removeEventListener('click', handleNavClick);
-  }, [navigate]);
+  }, [navigate, reducedMotion]);
 
   return (
     <TransitionContext.Provider value={{ navigate, phase: phaseState }}>

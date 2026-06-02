@@ -1,52 +1,30 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import gsap from "gsap";
 import Link from "next/link";
 import { GooeyText } from "@/components/ui/GooeyText";
 import { springs, motionTokens } from "@/lib/motion-tokens";
 
+const titleWordVariants = {
+  hidden: { y: 40, opacity: 0 },
+  visible: { y: 0, opacity: 1 },
+};
+
+const titleContainerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.06,
+      delayChildren: 0.1,
+    },
+  },
+};
+
 export default function Home() {
   const reduced = useReducedMotion();
   const prefersReduced = reduced === undefined ? false : reduced;
-
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const bioRef = useRef<HTMLDivElement>(null);
   const [showScrollHint, setShowScrollHint] = useState(true);
-
-  useEffect(() => {
-    if (prefersReduced) return;
-
-    const ctx = gsap.context(() => {
-      if (titleRef.current) {
-        const chars = titleRef.current.children;
-        if (chars.length) {
-          gsap.set(chars, { y: 40, opacity: 0 });
-          gsap.to(chars, {
-            y: 0,
-            opacity: 1,
-            stagger: 0.03,
-            duration: 0.8,
-            ease: "power4.out",
-          });
-        }
-      }
-
-      if (bioRef.current) {
-        gsap.set(bioRef.current, { y: 20, opacity: 0 });
-        gsap.to(bioRef.current, {
-          y: 0,
-          opacity: 1,
-          duration: 0.6,
-          ease: "power3.out",
-          delay: 0.5,
-        });
-      }
-    });
-
-    return () => ctx.revert();
-  }, [prefersReduced]);
 
   useEffect(() => {
     if (prefersReduced) return;
@@ -83,16 +61,30 @@ export default function Home() {
         <div className="absolute inset-0 flex flex-col items-center pt-[8vh] md:pt-[6vh]">
           <div id="hero-container" className="relative flex h-full w-full flex-col justify-between">
             <div id="hero-container-item1" className="w-full">
-              <h1
-                ref={titleRef}
-                className="font-anton text-red text-[clamp(4rem,18vw,12rem)] md:text-[clamp(8rem,14vw,18rem)] tracking-[-0.02em] leading-none text-center select-none px-4 text-balance"
+              <motion.h1
+                variants={titleContainerVariants}
+                initial="hidden"
+                animate="visible"
+                className="font-anton text-red text-[clamp(2.25rem,9vw,12rem)] md:text-[clamp(8rem,14vw,18rem)] tracking-[-0.02em] leading-[0.95] text-center select-none px-4 text-balance"
               >
-                {"ABHISHEK PANDEY".split("").map((char, i) => (
-                  <span key={i} className="inline-block">
-                    {char === " " ? "\u00A0" : char}
-                  </span>
+                {"ABHISHEK PANDEY".split(" ").map((word, wi) => (
+                  <motion.span
+                    key={wi}
+                    variants={titleWordVariants}
+                    transition={{ duration: 0.7, ease: motionTokens.easing.smooth }}
+                    className="inline-block whitespace-nowrap"
+                  >
+                    {word.split("").map((char, ci) => (
+                      <span
+                        key={`${wi}-${ci}`}
+                        className="inline-block"
+                      >
+                        {char}
+                      </span>
+                    ))}
+                  </motion.span>
                 ))}
-              </h1>
+              </motion.h1>
             </div>
 
             <div className="flex-1 min-h-0" />
@@ -100,13 +92,19 @@ export default function Home() {
             <div id="hero-container-item2" className="w-full pb-8 md:pb-12 px-6 md:px-12">
               <div className="mx-auto max-w-6xl">
                 <div className="flex flex-col md:flex-row items-start justify-between gap-6 md:gap-12">
-                  <div id="container-item2-box1" ref={bioRef} className="max-w-xs w-full md:w-auto">
+                  <motion.div
+                    id="container-item2-box1"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 0.7, ease: motionTokens.easing.smooth }}
+                    className="max-w-xs w-full md:w-auto"
+                  >
                     <p className="text-sm md:text-base text-white/70 leading-relaxed">
                       Full-stack developer &amp; creative engineer. I build
                       performant digital experiences — from scalable backends to
                       pixel-perfect interfaces.
                     </p>
-                  </div>
+                  </motion.div>
 
                   <div id="container-item2-box2" className="self-end md:self-auto w-full md:w-auto">
                     <GooeyText
@@ -132,7 +130,7 @@ export default function Home() {
                   >
                     <Link
                       href="/work"
-                      className="group inline-flex items-center gap-3 rounded-full bg-[#D40000] px-8 py-3.5 text-[13px] font-semibold text-[#EFEEE8] tracking-wide uppercase transition-[transform,background-color,box-shadow] duration-200 ease-out hover:shadow-[0_0_35px_-8px_rgba(212,0,0,0.5)] hover:scale-105 active:scale-95 cursor-pointer"
+                      className="btn-sweep group inline-flex items-center gap-3 rounded-full bg-[#D40000] px-8 py-3.5 text-sm font-semibold text-[#EFEEE8] tracking-wide uppercase transition-[transform,background-color,box-shadow] duration-200 ease-out hover:shadow-[0_0_35px_-8px_rgba(212,0,0,0.5)] hover:scale-105 active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                     >
                       <span>Explore Work</span>
                       <span className="text-lg transition-transform duration-200 ease-out group-hover:translate-x-1">
@@ -148,7 +146,7 @@ export default function Home() {
                   >
                     <Link
                       href="/contact"
-                      className="group inline-flex items-center gap-3 rounded-full border border-white/20 px-8 py-3.5 text-[13px] font-semibold text-white/80 tracking-wide uppercase transition-[transform,background-color,border-color] duration-200 ease-out hover:bg-white/5 hover:border-white/40 hover:scale-105 active:scale-95 cursor-pointer"
+                      className="btn-sweep group inline-flex items-center gap-3 rounded-full border border-white/20 px-8 py-3.5 text-sm font-semibold text-white/80 tracking-wide uppercase transition-[transform,background-color,border-color] duration-200 ease-out hover:bg-white/5 hover:border-white/40 hover:scale-105 active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D40000] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                     >
                       <span>Contact</span>
                     </Link>
@@ -173,7 +171,7 @@ export default function Home() {
             transition={{
               duration: 2,
               repeat: showScrollHint ? Infinity : 0,
-              ease: "easeInOut",
+              ease: motionTokens.easing.smooth,
             }}
           >
             ↓

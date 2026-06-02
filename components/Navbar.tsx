@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useReducer } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { GithubIcon, MailIcon } from "@animateicons/react/lucide";
 import BubbleMenu from "./ui/BubbleMenu";
 import PillNavLink from "./ui/PillNavLink";
+import { motionTokens, springs } from "@/lib/motion-tokens";
 
 type LinkItem = {
   label: string;
@@ -38,7 +39,7 @@ type NavbarProps = {
   cta?: CTA;
 };
 
-const smoothEase = [0.22, 1, 0.36, 1] as const;
+  const smoothEase = motionTokens.easing.smooth;
 
 export function Navbar({
   wordmark = "ABHISHEK",
@@ -51,30 +52,45 @@ export function Navbar({
 }: NavbarProps) {
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isPastHero, setIsPastHero] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
   const githubIconRef = useRef<any>(null);
   const mailIconRef = useRef<any>(null);
 
+  type NavState = { isExpanded: boolean; isPastHero: boolean };
+  type NavAction =
+    | { type: "TOGGLE_EXPANDED" }
+    | { type: "SET_PAST_HERO"; value: boolean }
+    | { type: "CLOSE_EXPANDED" }
+    | { type: "RESET_FOR_ROUTE"; isHome: boolean };
+
+  const navReducer = useCallback((state: NavState, action: NavAction): NavState => {
+    switch (action.type) {
+      case "TOGGLE_EXPANDED":
+        return { ...state, isExpanded: !state.isExpanded };
+      case "SET_PAST_HERO":
+        return state.isPastHero === action.value ? state : { ...state, isPastHero: action.value };
+      case "CLOSE_EXPANDED":
+        return state.isExpanded ? { ...state, isExpanded: false } : state;
+      case "RESET_FOR_ROUTE":
+        return { isExpanded: !action.isHome, isPastHero: !action.isHome };
+    }
+  }, []);
+
+  const [navState, dispatch] = useReducer(navReducer, { isExpanded: false, isPastHero: false });
+  const { isExpanded, isPastHero } = navState;
+
+  useEffect(() => {
+    dispatch({ type: "RESET_FOR_ROUTE", isHome });
+  }, [isHome]);
+
   const isShowingFull = isExpanded || isPastHero || !isHome;
 
   const close = useCallback(() => {
-    if (!isPastHero && isHome) setIsExpanded(false);
+    if (!isPastHero && isHome) dispatch({ type: "CLOSE_EXPANDED" });
   }, [isPastHero, isHome]);
 
   const toggle = useCallback(() => {
-    if (isHome) setIsExpanded((prev) => !prev);
-  }, [isHome]);
-
-  useEffect(() => {
-    if (isHome) {
-      setIsExpanded(false);
-      setIsPastHero(false);
-    } else {
-      setIsExpanded(true);
-      setIsPastHero(true);
-    }
+    if (isHome) dispatch({ type: "TOGGLE_EXPANDED" });
   }, [isHome]);
 
   useEffect(() => {
@@ -97,9 +113,9 @@ export function Navbar({
         const heroBottom = entry.boundingClientRect.bottom;
         const viewportHeight = window.innerHeight;
         const scrolledPast = heroBottom < viewportHeight * 0.4;
-        setIsPastHero(scrolledPast);
+        dispatch({ type: "SET_PAST_HERO", value: scrolledPast });
         if (scrolledPast) {
-          setIsExpanded(false);
+          dispatch({ type: "CLOSE_EXPANDED" });
         }
       },
       { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] }
@@ -138,12 +154,7 @@ export function Navbar({
     };
   }, [isExpanded, isPastHero, close, isHome]);
 
-  const morphSpring = {
-    type: "spring" as const,
-    stiffness: 300,
-    damping: 30,
-    mass: 0.6,
-  };
+  const morphSpring = springs.snappy;
 
   const listVariants = {
     hidden: { transition: { staggerChildren: 0.06, staggerDirection: -1 } },
@@ -156,7 +167,7 @@ export function Navbar({
       opacity: 1,
       y: 0,
       scale: 1,
-      transition: { type: "spring" as const, stiffness: 400, damping: 26 },
+      transition: springs.snappy,
     },
   };
 
@@ -224,8 +235,8 @@ export function Navbar({
                 : "inset 0 1px 1px rgba(255,255,255,0.18), 0 12px 44px rgba(0,0,0,0.65)",
           }}
           transition={{
-            y: { duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.1 },
-            opacity: { duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.1 },
+            y: { duration: 0.5, ease: motionTokens.easing.smooth, delay: 0.1 },
+            opacity: { duration: 0.5, ease: motionTokens.easing.smooth, delay: 0.1 },
             paddingLeft: morphSpring,
             paddingRight: morphSpring,
             paddingTop: morphSpring,
@@ -266,7 +277,7 @@ export function Navbar({
               <span className="relative flex h-2 w-2 shrink-0">
                 <motion.span
                   animate={{ opacity: [0.55, 1, 0.55], scale: [1, 1.4, 1] }}
-                  transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+                  transition={{ duration: 1.6, repeat: Infinity, ease: motionTokens.easing.smooth }}
                   className="absolute inline-flex h-full w-full rounded-full bg-[#D40000]"
                 />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D40000]" />
@@ -319,9 +330,9 @@ export function Navbar({
                 <div className="flex items-center gap-2">
                   {socials?.github ? (
                     <motion.a
-                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      whileHover={{ scale: 1.1, rotate: 2 }}
                       whileTap={{ scale: 0.95 }}
-                      transition={{ type: "spring", stiffness: 450, damping: 25 }}
+                      transition={springs.snappy}
                       href={socials.github}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -334,9 +345,9 @@ export function Navbar({
 
                   {socials?.email ? (
                     <motion.a
-                      whileHover={{ scale: 1.1, rotate: -5 }}
+                      whileHover={{ scale: 1.1, rotate: -2 }}
                       whileTap={{ scale: 0.95 }}
-                      transition={{ type: "spring", stiffness: 450, damping: 25 }}
+                      transition={springs.snappy}
                       href={socials.email}
                       aria-label="Send email"
                       className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white/85 transition-colors duration-150 hover:bg-white/5 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"

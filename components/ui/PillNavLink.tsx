@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
+import { useReducedMotion } from 'motion/react';
+import { gsapEasings } from '@/lib/motion-tokens';
 
 interface PillNavLinkProps {
   label: string;
@@ -31,17 +33,19 @@ export function PillNavLink({
 
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const tweenRef = useRef<gsap.core.Tween | null>(null);
-
-  const applyCssVars = () => {
-    const container = containerRef.current;
-    if (!container) return;
-    container.style.setProperty('--base', baseColor);
-    container.style.setProperty('--pill-bg', pillBgColor);
-    container.style.setProperty('--hover-text', hoverTextColor);
-    container.style.setProperty('--pill-text', textColor);
-  };
+  const reducedMotion = useReducedMotion();
+  const effectiveEase = reducedMotion ? "none" : ease;
 
   useEffect(() => {
+    const applyCssVars = () => {
+      const container = containerRef.current;
+      if (!container) return;
+      container.style.setProperty('--base', baseColor);
+      container.style.setProperty('--pill-bg', pillBgColor);
+      container.style.setProperty('--hover-text', hoverTextColor);
+      container.style.setProperty('--pill-text', textColor);
+    };
+
     applyCssVars();
     const layout = () => {
       const circle = circleRef.current;
@@ -79,15 +83,15 @@ export function PillNavLink({
 
       const tl = gsap.timeline({ paused: true });
 
-      tl.to(circle, { scale: 1.25, xPercent: -50, duration: 2, ease, overwrite: 'auto' }, 0);
+      tl.to(circle, { scale: 1.25, xPercent: -50, duration: 0.35, ease: effectiveEase, overwrite: 'auto' }, 0);
 
       if (labelEl) {
-        tl.to(labelEl, { y: -(h + 8), duration: 2, ease, overwrite: 'auto' }, 0);
+        tl.to(labelEl, { y: -(h + 8), duration: 0.35, ease: effectiveEase, overwrite: 'auto' }, 0);
       }
 
       if (labelHoverEl) {
         gsap.set(labelHoverEl, { y: Math.ceil(h + 12), opacity: 0 });
-        tl.to(labelHoverEl, { y: 0, opacity: 1, duration: 2, ease, overwrite: 'auto' }, 0);
+        tl.to(labelHoverEl, { y: 0, opacity: 1, duration: 0.35, ease: effectiveEase, overwrite: 'auto' }, 0);
       }
 
       timelineRef.current = tl;
@@ -107,15 +111,16 @@ export function PillNavLink({
       timelineRef.current?.kill();
       tweenRef.current?.kill();
     };
-  }, [label, ease, baseColor, pillBgColor, hoverTextColor, textColor]);
+  }, [label, ease, baseColor, pillBgColor, hoverTextColor, textColor, effectiveEase]);
 
   const handleMouseEnter = () => {
     const tl = timelineRef.current;
     if (!tl) return;
+    if (reducedMotion) return;
     tweenRef.current?.kill();
     tweenRef.current = tl.tweenTo(tl.duration(), {
       duration: 0.35,
-      ease,
+      ease: effectiveEase,
       overwrite: 'auto'
     });
   };
@@ -123,10 +128,11 @@ export function PillNavLink({
   const handleMouseLeave = () => {
     const tl = timelineRef.current;
     if (!tl) return;
+    if (reducedMotion) return;
     tweenRef.current?.kill();
     tweenRef.current = tl.tweenTo(0, {
       duration: 0.25,
-      ease,
+      ease: effectiveEase,
       overwrite: 'auto'
     });
   };
@@ -137,7 +143,7 @@ export function PillNavLink({
       href={href}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`pill inline-flex items-center justify-center rounded-full text-[13px] tracking-wide relative overflow-hidden transition-colors duration-150 whitespace-nowrap cursor-pointer px-4 font-semibold ${className}`}
+      className={`pill inline-flex items-center justify-center rounded-full text-sm tracking-wide relative overflow-hidden transition-colors duration-150 whitespace-nowrap cursor-pointer px-4 font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--base,#D40000)] focus-visible:ring-offset-2 focus-visible:ring-offset-black ${className}`}
       id={`pill-nav-link-${label.toLowerCase().replace(/\s+/g, '-')}`}
     >
       <span
