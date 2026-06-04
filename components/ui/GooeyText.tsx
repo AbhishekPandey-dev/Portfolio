@@ -43,11 +43,11 @@ export function GooeyText({
     t2.textContent = texts[(textIndex + 1) % texts.length];
 
     const setMorph = (fraction: number) => {
-      t2.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
+      t2.style.filter = `blur(${Math.min(12 / fraction - 12, 150)}px)`;
       t2.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
 
       const inv = 1 - fraction;
-      t1.style.filter = `blur(${Math.min(8 / inv - 8, 100)}px)`;
+      t1.style.filter = `blur(${Math.min(12 / inv - 12, 150)}px)`;
       t1.style.opacity = `${Math.pow(inv, 0.4) * 100}%`;
     };
 
@@ -137,7 +137,7 @@ export function GooeyText({
               values="1 0 0 0 0
                       0 1 0 0 0
                       0 0 1 0 0
-                      0 0 0 255 -140"
+                      0 0 0 255 -100"
             />
           </filter>
         </defs>

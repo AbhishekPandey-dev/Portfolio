@@ -181,8 +181,8 @@ export function Navbar({
   };
 
   return (
-    <header className="fixed inset-x-0 top-3 z-50 px-3 pointer-events-none sm:top-4 lg:px-0">
-      <div className="lg:hidden w-full relative pointer-events-auto">
+    <header className="relative w-full h-[10vh] flex items-center justify-center z-50">
+      <div className="lg:hidden w-full relative px-3 pointer-events-auto">
         <BubbleMenu
           logo={
             <div className="flex items-center gap-2 select-none">
@@ -204,7 +204,7 @@ export function Navbar({
           socials={socials}
           menuBg="rgba(10, 10, 10, 0.45)"
           menuContentColor="#ffffff"
-          useFixedPosition={true}
+          useFixedPosition={false}
           animationEase="back.out(1.5)"
           animationDuration={0.4}
           staggerDelay={0.08}

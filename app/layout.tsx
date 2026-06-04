@@ -48,7 +48,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${anton.variable} ${poppins.variable} ${b612.variable} font-sans`} suppressHydrationWarning>
+      <body className={`${anton.variable} ${poppins.variable} ${b612.variable} font-sans min-h-screen`} suppressHydrationWarning>
         <GSAPRegistry />
         <Navbar />
         <ClickSpark
